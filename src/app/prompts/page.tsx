@@ -100,7 +100,15 @@ export default function PromptsPage() {
       <p className="text-slate-400 mb-4">{t.subtitle}</p>
 
       {/* Card */}
-      <div className="rounded-xl bg-slate-800 p-4 shadow">
+      <div className="relative rounded-xl bg-slate-800/80 p-4 shadow-2xl ring-1 ring-slate-700/50 backdrop-blur">
+
+        {/* progress bar activa solo al cargar */}
+        {loading && (
+          <div className="absolute left-0 top-0 h-1 w-full overflow-hidden rounded-t-xl">
+            <div className="h-full w-1/3 animate-[loading_1.2s_ease-in-out_infinite] bg-teal-400/80"></div>
+          </div>
+        )}
+
         {/* Input */}
         <div className="mb-3">
           <label className="block text-xs text-slate-400 mb-1">
