@@ -8,6 +8,8 @@ const OPENROUTER_KEY = process.env.OPENROUTER_TOKEN;
 const HUGGINGFACE_KEY = process.env.HUGGINGFACE_TOKEN;
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL || "OR"; // OR | HF
 
+type Message = { role: 'system' | 'user' | 'assistant'; content: string };
+
 // Modelos de fallback
 const MODELS = {
   OR: ["x-ai/grok-4-fast:free", "deepseek/deepseek-chat-v3-0324:free"],
@@ -21,7 +23,7 @@ async function callModel(
   url: string,
   token: string,
   model: string,
-  messages: any[]
+  messages: Message[]
 ) {
   const res = await fetch(url, {
     method: "POST",
@@ -45,13 +47,13 @@ async function callModel(
 
 export async function POST(req: Request) {
   try {
-    const { prompt, lang, systemPrompt } = await req.json();
+    const { prompt, systemPrompt } = await req.json();
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt requerido" }, { status: 400 });
     }
 
-    const messages = [
+    const messages: Message[] = [
       { role: "system", content: systemPrompt || "You are a helpful assistant." },
       { role: "user", content: prompt },
     ];
@@ -69,8 +71,9 @@ export async function POST(req: Request) {
             messages
           );
           return NextResponse.json({ model, text });
-        } catch (err: any) {
-          errors.push(`${model} → ${err.message}`);
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+          errors.push(`${model} → ${message}`);
         }
       }
     }
@@ -85,8 +88,9 @@ export async function POST(req: Request) {
             messages
           );
           return NextResponse.json({ model, text });
-        } catch (err: any) {
-          errors.push(`${model} → ${err.message}`);
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);   
+          errors.push(`${model} → ${message}`);
         }
       }
     }
@@ -95,7 +99,8 @@ export async function POST(req: Request) {
       { error: "No hay modelos disponibles", details: errors },
       { status: 503 }
     );
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

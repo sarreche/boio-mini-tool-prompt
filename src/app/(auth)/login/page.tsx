@@ -29,6 +29,8 @@ export default function LoginPage() {
         setError(t.errorEmailInvalid);
       }
     } catch (_err: unknown) {
+      const msg = _err instanceof Error ? _err.message : String(_err);
+      console.error("login error:", msg);
       setError(t.errorGeneral);
     } finally {
       setLoading(false);
@@ -48,6 +50,8 @@ export default function LoginPage() {
         setError(t.errorPinInvalid);
       }
     } catch (_err: unknown) {
+      const msg = _err instanceof Error ? _err.message : String(_err);
+      console.error("login error:", msg);
       setError(t.errorGeneral);
     } finally {
       setLoading(false);

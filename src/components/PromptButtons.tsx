@@ -1,7 +1,11 @@
 
+export type PromptPreset = {
+  label: string;
+  build: (txt: string) => string;
+};
 
 type PromptButtonProps = {
-  preset: any;
+  preset: PromptPreset;
   currentText: string;
   lang: "es" | "en";
   onApply: (value: string) => void;

@@ -1,3 +1,9 @@
+
+export type PromptPreset = {
+  label: string;
+  build: (txt: string) => string;
+};
+
 export const loginI18n = {
   es: {
     title: "Prompt Toolkit",

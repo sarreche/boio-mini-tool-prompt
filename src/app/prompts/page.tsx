@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { promptsI18n } from "@/lib/i18n";
-import { useRouter } from "next/navigation";
-import PromptButton from "@/components/PromptButtons";
+import PromptButton, { PromptPreset } from "@/components/PromptButtons";
+import Image from "next/image";
 
 export default function PromptsPage() {
-  const router = useRouter();
   const [currentLang, setCurrentLang] = useState<"es" | "en">("es");
   const [userInput, setUserInput] = useState("");
   const [output, setOutput] = useState("");
-  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
   const t = promptsI18n[currentLang];
@@ -31,7 +29,6 @@ export default function PromptsPage() {
       return;
     }
     setLoading(true);
-    setStatus(t.status.consulting);
     setOutput("");
 
     try {
@@ -51,10 +48,10 @@ export default function PromptsPage() {
       if (data.error) throw new Error(data.error);
 
       setOutput(data.text.trim());
-      setStatus(t.status.ready.replace("{0}", data.model));
-    } catch (err: any) {
-      setOutput(err.message);
-      setStatus(t.status.error);
+    
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setOutput(message);
     } finally {
       setLoading(false);
     }
@@ -63,7 +60,6 @@ export default function PromptsPage() {
   const handleClear = () => {
     setUserInput("");
     setOutput("");
-    setStatus("");
   };
 
  const handleLogout = async () => {
@@ -79,7 +75,8 @@ export default function PromptsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
-          <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded-full" />
+          <Image src="/logo.png" alt="Logo" width={48} height={48} className="w-12 h-12 rounded-full" />
+      
           <h1 className="text-2xl font-bold">{t.title}</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -124,7 +121,7 @@ export default function PromptsPage() {
             {t.buttonsLabel}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {t.presets.map((preset: any, i: number) => (
+            {t.presets.map((preset: PromptPreset, i: number) => (
                 <PromptButton
                     key={i}
                     preset={preset}
