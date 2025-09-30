@@ -56,23 +56,23 @@ export const promptsI18n = {
     presets: [
         {
           label: "Explicar simple",
-          build: (txt: string) => `Explicá esto como si tuviera 10 años:\n\n${txt}`
+          build: (txt: string) => `Explica esto como si tuviera 10 años:\n\n${txt}`
         },
         {
           label: "Resumir en bullets",
-          build: (txt: string) => `Resumí en 5 puntos:\n\n${txt}`
+          build: (txt: string) => `Resume en 5 puntos:\n\n${txt}`
         },
         {
           label: "Traducir a inglés",
-          build: (txt: string) => `Traducí al inglés:\n\n${txt}`
+          build: (txt: string) => `Traduce al inglés:\n\n${txt}`
         },
         {
           label: "Mejorar redacción",
-          build: (txt: string) => `Reescribí de forma clara y neutral:\n\n${txt}`
+          build: (txt: string) => `Reescribe de forma clara y neutral:\n\n${txt}`
         },
         {
           label: "Correo breve",
-          build: (txt: string) => `Redactá un email corto y profesional sobre:\n\n${txt}`
+          build: (txt: string) => `Redacta un email corto y profesional sobre:\n\n${txt}`
         },
         {
           label: "Ideas creativas",
