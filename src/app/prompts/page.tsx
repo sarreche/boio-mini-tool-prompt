@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { promptsI18n } from "@/lib/i18n";
 import PromptButton, { PromptPreset } from "@/components/PromptButtons";
 import Image from "next/image";
+import { useSearchParams } from 'next/navigation';
 
 export default function PromptsPage() {
   const [currentLang, setCurrentLang] = useState<"es" | "en">("es");
@@ -13,15 +14,30 @@ export default function PromptsPage() {
 
   const t = promptsI18n[currentLang];
 
+  const searchParams = useSearchParams();
+
   // Detect language on mount
   useEffect(() => {
-    const browserLangs = navigator.languages || [navigator.language];
-    const supported = Object.keys(promptsI18n);
-    const defaultLang = browserLangs
+    const langParam = searchParams.get('lang');
+    if (langParam === 'es' || langParam === 'en') {
+      setCurrentLang(langParam);
+    }
+    else {
+      //lenguiajes del navegador pro defecto a español
+      const browserLangs = navigator.languages || [navigator.language];
+      const supported = Object.keys(promptsI18n);
+      const defaultLang = browserLangs
       .map((l) => l.split("-")[0])
       .find((l) => supported.includes(l));
-    setCurrentLang((defaultLang as "es" | "en") || "es");
-  }, []);
+      setCurrentLang((defaultLang as "es" | "en") || "es");
+    }
+  
+  }, [searchParams]);
+
+  // funcion para santiizar la entrada del usuario
+  /*const sanitizeInput = (text: string): string => {
+    return text.trim().replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ');
+  };*/
 
   const handleRun = async () => {
     if (!userInput.trim()) {
@@ -92,7 +108,7 @@ export default function PromptsPage() {
             onClick={handleLogout}
             className="rounded border border-slate-600 px-3 py-1 text-sm text-slate-300 hover:bg-slate-700"
           >
-            {currentLang === "es" ? "Salir" : "Logout"}
+            {t.logoutButton}
           </button>
         </div>
       </div>

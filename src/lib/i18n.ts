@@ -1,9 +1,4 @@
 
-export type PromptPreset = {
-  label: string;
-  build: (txt: string) => string;
-};
-
 export const loginI18n = {
   es: {
     title: "Prompt Toolkit",
@@ -51,6 +46,7 @@ export const promptsI18n = {
     execute: "▶ Ejecutar",
     clear: "Limpiar",
     response: "Respuesta",
+    logoutButton: 'Salir',
     status: {
       consulting: "Consultando modelos...",
       ready: "Listo (modelo: {0})",
@@ -118,6 +114,7 @@ export const promptsI18n = {
     execute: "▶ Run",
     clear: "Clear",
     response: "Response",
+    logoutButton: 'Logout',
     status: {
       consulting: "Consulting models...",
       ready: "Done (model: {0})",

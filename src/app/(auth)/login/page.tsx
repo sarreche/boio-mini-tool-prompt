@@ -45,7 +45,7 @@ export default function LoginPage() {
     try {
       const isValid = await validatePin(email, pin);
       if (isValid) {
-        router.push("/"); 
+        router.push(`/prompts?lang=${currentLang}`); 
       } else {
         setError(t.errorPinInvalid);
       }
