@@ -12,7 +12,7 @@ type Message = { role: 'system' | 'user' | 'assistant'; content: string };
 
 // Modelos de fallback
 const MODELS = {
-  OR: ["x-ai/grok-4-fast:free", "deepseek/deepseek-chat-v3-0324:free"],
+  OR: ["deepseek/deepseek-chat-v3.1:free", "qwen/qwen3-coder:free","openai/gpt-oss-20b:free"],
   HF: [
     "HuggingFaceH4/zephyr-7b-beta:featherless-ai",
     "mistralai/Mistral-7B-Instruct-v0.2:featherless-ai",
