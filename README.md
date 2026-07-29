@@ -9,10 +9,13 @@ Prompt Toolkit es una aplicación web bilingüe que facilita tareas cotidianas c
 - Sesiones SSR verificadas en páginas protegidas y en `/api/inference`.
 - Cambio voluntario de contraseña desde la aplicación.
 - Interfaz en español e inglés.
-- Inferencia mediante OpenRouter o Hugging Face con fallback entre modelos.
+- Inferencia mediante OpenRouter y Hugging Face con catálogo y fallback dinámico
+  configurados en Supabase.
 - Despliegue en Vercel desde `master`.
 
-La experiencia de chat, conversaciones persistentes, perfiles, roles y planes continúan siendo dirección futura, no funcionalidad implementada.
+La base de datos para conversaciones, perfiles, roles, planes, métricas y auditoría
+ya está creada en Supabase. La interfaz de chat y la integración de estos datos con
+el MVP continúan como trabajo futuro.
 
 ## Stack
 
@@ -35,13 +38,16 @@ Crear `.env.local` a partir de `.env.example`:
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 
 OPENROUTER_TOKEN=
 HUGGINGFACE_TOKEN=
-DEFAULT_MODEL=OR
+AI_MODEL_ROUTE=default
 ```
 
-La publishable key puede usarse en el navegador. Nunca configurar una clave `service_role` o `sb_secret_...` en una variable `NEXT_PUBLIC_*`.
+La publishable key puede usarse en el navegador. La secret key de Supabase y los
+tokens de inferencia son exclusivamente de servidor y nunca deben configurarse en
+variables `NEXT_PUBLIC_*`.
 
 ## Configuración de Supabase
 

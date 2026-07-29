@@ -152,16 +152,16 @@ Si el usuario excluye su contenido del análisis, se podrán conservar métricas
 
 ## Fuera del alcance actual
 
-- Conversaciones persistentes.
-- Perfiles, roles y datos de cuenta adicionales a Supabase Auth.
-- Roles.
-- Planes aplicados automáticamente.
+- Interfaz de conversaciones persistentes.
+- Aplicación automática de planes y límites.
 - Panel administrativo.
 - Archivos y dictado.
 - Exportación.
-- Métricas persistentes.
+- Integración del flujo de inferencia con las métricas persistentes.
 
-Son objetivos futuros, no capacidades del MVP.
+La base de datos necesaria para perfiles, roles, planes, conversaciones, métricas y
+auditoría ya existe, pero estas capacidades todavía no están conectadas a la
+interfaz del MVP.
 
 ## PENDIENTES DE CONFIRMACIÓN
 

@@ -31,7 +31,11 @@ Navegador
 - La cookie heredada `isAuthenticated` se elimina y ya no concede acceso.
 - No se usa `getSession()` para decisiones de autorización.
 
-No existen todavía tablas de perfiles, roles o planes. Tampoco se utiliza una clave privilegiada en la aplicación.
+Supabase Postgres contiene ahora las tablas base para perfiles, roles, planes,
+suscripciones, conversaciones, uso y auditoría. La interfaz actual todavía no
+consume estas tablas y la aplicación no utiliza una clave privilegiada.
+
+Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 
 ## Componentes principales
 
@@ -49,11 +53,17 @@ No existen todavía tablas de perfiles, roles o planes. Tampoco se utiliza una c
 1. La ruta verifica una identidad Supabase firmada.
 2. El cliente envía `prompt`, `lang` y `systemPrompt`.
 3. El servidor valida que exista `prompt`.
-4. `DEFAULT_MODEL` selecciona OpenRouter (`OR`) o Hugging Face (`HF`).
-5. Se recorren los modelos de esa familia hasta obtener una respuesta.
-6. Si todos fallan, se devuelve HTTP 503.
+4. Un cliente Supabase exclusivamente de servidor consulta la ruta configurada en
+   `active_model_routes`.
+5. Se crea una ejecución pendiente y un intento por cada modelo utilizado.
+6. Los modelos se recorren por prioridad, incluso entre proveedores diferentes.
+7. Una respuesta exitosa completa transaccionalmente el intento, la ejecución y el
+   evento de uso.
+8. Si todos fallan, se persisten los intentos y se devuelve HTTP 503.
 
-No hay fallback entre proveedores, streaming, persistencia ni conversación multi-turno.
+No hay streaming ni conversación multi-turno. La persistencia actual registra
+ejecuciones, intentos y uso, pero todavía no crea conversaciones o mensajes desde
+esta ruta.
 
 ## Límites de confianza
 
@@ -63,6 +73,20 @@ No hay fallback entre proveedores, streaming, persistencia ni conversación mult
 - Las rutas API protegen los secretos de inferencia.
 - Las futuras tablas expuestas deberán habilitar RLS y aislar cada fila por propietario.
 
+## Persistencia de producto
+
+- Las migraciones viven en `supabase/migrations/`.
+- Las tablas expuestas están en `public` y tienen RLS.
+- Los datos administrativos y operativos sensibles están en `app_private`.
+- El usuario puede consultar solamente sus propios datos.
+- Las escrituras sensibles requerirán rutas de servidor.
+- Los límites comerciales continúan configurables y sin cantidades definitivas.
+- Los proveedores, modelos y prioridades de fallback se configuran en la base de
+  datos.
+
 ## Dirección futura confirmada
 
-Se mantienen como objetivos el chat, conversaciones persistentes, métricas, planes, roles y una aplicación administrativa separada. No están implementados actualmente.
+El esquema de persistencia para chat, conversaciones, métricas, planes y roles ya
+está creado. Continúan pendientes las interfaces que usan estos datos, la aplicación
+administrativa separada y la integración del flujo de inferencia con la nueva
+persistencia.

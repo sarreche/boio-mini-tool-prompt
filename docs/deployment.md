@@ -16,14 +16,21 @@
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SECRET_KEY`
 
 ### Inferencia
 
 - `OPENROUTER_TOKEN`
 - `HUGGINGFACE_TOKEN`
-- `DEFAULT_MODEL`
+- `AI_MODEL_ROUTE` (actualmente `default`)
 
-Configurar las variables por ambiente en Vercel. La publishable key puede exponerse al navegador; nunca usar `service_role` o `sb_secret_...` bajo `NEXT_PUBLIC_*`.
+Configurar las variables por ambiente en Vercel. La publishable key puede exponerse
+al navegador. `SUPABASE_SECRET_KEY`, `OPENROUTER_TOKEN` y `HUGGINGFACE_TOKEN` son
+secretos de servidor y nunca deben usar el prefijo `NEXT_PUBLIC_`.
+
+La secret key de Supabase permite que `/api/inference` consulte la configuración
+privada de modelos y persista ejecuciones. Debe configurarse por separado para
+Development, Preview y Production según los ambientes que vayan a utilizarse.
 
 Las variables antiguas `GOOGLE_SHEETS_*` y `GOOGLE_SERVICE_ACCOUNT_*` ya no son consumidas por la aplicación y deben retirarse de Vercel después de validar el despliegue.
 
@@ -41,11 +48,13 @@ Sin SMTP ni correos automáticos, la recuperación consiste en que el administra
 
 ## Verificación de preview
 
-1. Confirmar las variables de Supabase y del proveedor de inferencia.
+1. Confirmar las variables públicas y secretas de Supabase, los tokens de
+   proveedores y `AI_MODEL_ROUTE`.
 2. Probar redirección inicial y login válido e inválido.
 3. Confirmar que `/prompts` y `/account/password` redirigen sin sesión.
 4. Confirmar que `/api/inference` devuelve `401` sin sesión.
-5. Probar inferencia, fallback, cambio de contraseña y logout.
+5. Probar inferencia, fallback entre proveedores, persistencia de ejecución, cambio
+   de contraseña y logout.
 6. Verificar español e inglés.
 7. Revisar logs y ejecutar los asesores de seguridad de Supabase.
 8. No promover hasta completar la revisión.
