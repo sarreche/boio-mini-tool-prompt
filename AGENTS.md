@@ -17,7 +17,7 @@ No describir una funcionalidad futura como si ya existiera.
 - Next.js 15 con App Router y Turbopack.
 - React 19 y TypeScript.
 - Tailwind CSS 4.
-- Google Sheets para la validación temporal de usuarios.
+- Supabase Auth para autenticación con email y contraseña.
 - OpenRouter o Hugging Face para inferencia texto a texto.
 - Vercel para despliegue.
 
@@ -26,7 +26,7 @@ No describir una funcionalidad futura como si ya existiera.
 - `src/app/`: páginas y rutas API.
 - `src/app/(auth)/login/`: login del MVP.
 - `src/app/prompts/`: interfaz de prompts.
-- `src/app/api/auth/`: validación de email/PIN y logout.
+- `src/lib/supabase/`: clientes SSR de autenticación.
 - `src/app/api/inference/`: selección y fallback de modelos.
 - `src/components/`: componentes reutilizables.
 - `src/lib/i18n.ts`: textos, presets y system prompts en español e inglés.
@@ -61,7 +61,7 @@ No existe actualmente una suite de tests.
 8. No usar metadatos editables por el usuario para determinar roles.
 9. Conservar el fallback de modelos como parte del requisito de disponibilidad, salvo decisión explícita.
 10. Actualizar la documentación cuando cambien flujos, variables de entorno, modelos, proveedores o despliegue.
-11. No cambiar la estructura esperada de Google Sheets mientras siga activa sin documentar y coordinar la transición.
+11. No reintroducir Google Sheets como fuente de autenticación.
 12. No llamar “eliminar” a una operación que solamente archive u oculte datos.
 
 ## Verificación mínima
@@ -84,7 +84,7 @@ Antes de entregar cambios:
 - Persistir conversaciones, mensajes, modelo utilizado, resultados y valoraciones.
 - Incorporar planes gratuito y pago con límites y tareas premium.
 - Mantener inicialmente Gumroad y la activación manual de suscripciones.
-- Migrar autenticación y datos desde Google Sheets, probablemente a Supabase.
+- Ampliar Supabase desde Auth hacia persistencia de conversaciones y datos de producto.
 - Incorporar una aplicación administrativa separada para roles `root` y `admin`.
 
 Ver `docs/domain.md` y `docs/architecture.md` antes de diseñar funcionalidades nuevas.
@@ -132,7 +132,7 @@ Ejemplos:
 
 ## PENDIENTES DE CONFIRMACIÓN
 
-- Proveedor definitivo de base de datos y autenticación; Supabase es la opción preferida, no una implementación existente.
+- Alcance definitivo de Supabase para datos de producto adicionales a la autenticación ya implementada.
 - Cantidades concretas de usos mensuales y pruebas premium.
 - Categorías definitivas del catálogo de tareas.
 - Política concreta de retención/mantenimiento para datos conservados indefinidamente.

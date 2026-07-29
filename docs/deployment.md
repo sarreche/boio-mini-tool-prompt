@@ -1,49 +1,21 @@
 # Despliegue
 
-## Estado confirmado
-
-La aplicación se despliega en Vercel mediante la integración con Git.
+## Estado
 
 | Elemento | Valor |
 |---|---|
 | Producción | `https://minitoolprompt.vercel.app` |
 | Repositorio | `github.com/sarreche/boio-mini-tool-prompt.git` |
 | Rama de producción | `master` |
-| Deploy | Automático al hacer push a `master` |
-| Framework | Next.js |
-
-Una captura del panel confirmó un despliegue:
-
-- Estado `Ready`.
-- Ambiente `Production`.
-- Marcado como `Current`.
-- Commit `b97230c`.
-- Duración de build de 1 minuto 14 segundos.
-- Fecha 23 de octubre de 2025.
-
-La captura también mostró cuatro recomendaciones de Vercel cuyo contenido está **PENDIENTE DE CONFIRMACIÓN**.
-
-## Ambientes
-
-Vercel proporciona:
-
-- Development local.
-- Preview para ramas distintas de producción.
-- Production desde `master`.
-
-El uso habitual de previews se considera una buena práctica confirmada, aunque el flujo de trabajo todavía no está formalizado.
-
-## Preparación local
-
-```bash
-npm ci
-npm run lint
-npm run build
-```
-
-El build actual utiliza `next/font/google` para Geist y Geist Mono. Necesita acceso a Google Fonts durante la compilación.
+| Plataforma | Vercel |
+| Autenticación | Supabase Auth |
 
 ## Variables requeridas
+
+### Supabase Auth
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 ### Inferencia
 
@@ -51,109 +23,49 @@ El build actual utiliza `next/font/google` para Geist y Geist Mono. Necesita acc
 - `HUGGINGFACE_TOKEN`
 - `DEFAULT_MODEL`
 
-### Autenticación temporal
+Configurar las variables por ambiente en Vercel. La publishable key puede exponerse al navegador; nunca usar `service_role` o `sb_secret_...` bajo `NEXT_PUBLIC_*`.
 
-- `GOOGLE_SHEETS_ID`
-- `GOOGLE_SHEETS_RANGE`
-- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
-- `GOOGLE_PRIVATE_KEY`
+Las variables antiguas `GOOGLE_SHEETS_*` y `GOOGLE_SERVICE_ACCOUNT_*` ya no son consumidas por la aplicación y deben retirarse de Vercel después de validar el despliegue.
 
-Nunca almacenar valores reales en el repositorio. Configurarlos por ambiente en Vercel.
+## Configuración externa
 
-## Acceso saliente
+En Supabase:
 
-El runtime necesita alcanzar:
+1. Habilitar Email/Password.
+2. Deshabilitar el registro público.
+3. Establecer Site URL en `https://minitoolprompt.vercel.app`.
+4. Autorizar `http://localhost:3000` y las URLs de preview necesarias.
+5. Crear usuarios manualmente con email confirmado.
 
-- Google Sheets API.
-- OpenRouter si `DEFAULT_MODEL=OR`.
-- Hugging Face si `DEFAULT_MODEL=HF`.
+Sin SMTP ni correos automáticos, la recuperación consiste en que el administrador asigne y comunique una contraseña temporal nueva.
 
-El build necesita alcanzar Google Fonts mientras se usen las fuentes actuales.
+## Verificación de preview
 
-## Verificación de un preview
+1. Confirmar las variables de Supabase y del proveedor de inferencia.
+2. Probar redirección inicial y login válido e inválido.
+3. Confirmar que `/prompts` y `/account/password` redirigen sin sesión.
+4. Confirmar que `/api/inference` devuelve `401` sin sesión.
+5. Probar inferencia, fallback, cambio de contraseña y logout.
+6. Verificar español e inglés.
+7. Revisar logs y ejecutar los asesores de seguridad de Supabase.
+8. No promover hasta completar la revisión.
 
-1. Abrir el proyecto en Vercel.
-2. Entrar en `Deployments`.
-3. Identificar el ambiente, rama, commit y estado.
-4. Abrir la URL de preview.
-5. Revisar build logs.
-6. Probar:
-   - Redirección inicial.
-   - Validación de email.
-   - Validación de PIN.
-   - Español e inglés.
-   - Aplicación de presets.
-   - Respuesta de inferencia.
-   - Fallback ante fallo de un modelo.
-   - Logout.
-7. No promover hasta completar la revisión.
+## Verificación local
 
-## Verificación de producción
+```bash
+npm ci
+npm run lint
+npm run build
+```
 
-1. Confirmar que el despliegue figura como `Ready`, `Production` y `Current`.
-2. Confirmar rama `master` y SHA esperado.
-3. Probar la URL principal.
-4. Revisar logs de funciones.
-5. Confirmar variables de Production.
-6. Comprobar que no existan secretos expuestos al cliente.
-
-## Configuración en Vercel
-
-Para revisar la rama:
-
-1. Proyecto → `Settings`.
-2. `Environments`.
-3. `Production`.
-4. `Branch Tracking`.
-5. Confirmar `master`.
-
-Para revisar Git:
-
-1. Proyecto → `Settings`.
-2. `Git`.
-3. Confirmar repositorio y despliegues automáticos.
-
-Para revisar recomendaciones:
-
-1. Abrir el deployment actual.
-2. Expandir `Deployment Settings`.
-3. Revisar cada recomendación antes de aplicarla.
-4. Probar cualquier actualización en Preview.
+El build descarga Google Fonts mientras se utilice `next/font/google`; un fallo de red en esa descarga debe informarse separadamente.
 
 ## Rollback
 
-Vercel conserva despliegues anteriores que pueden reasignarse o promoverse. Antes de un cambio de producción:
+Vercel conserva despliegues anteriores. Antes de promover:
 
-1. Identificar el último despliegue estable.
-2. Registrar su URL y commit.
-3. Probar el nuevo build en Preview.
-4. Si producción falla, volver al despliegue estable desde Vercel.
+1. Identificar el último deployment estable.
+2. Probar el cambio en Preview.
+3. Ante un fallo, reasignar producción al deployment estable.
 
-El procedimiento operativo exacto y responsables están **PENDIENTES DE CONFIRMACIÓN**.
-
-## Arquitectura futura de despliegue
-
-Se prevén dos aplicaciones:
-
-- Aplicación pública.
-- Aplicación administrativa para `admin` y `root`.
-
-La recomendación inicial es utilizar proyectos de Vercel separados conectados al mismo backend, con autorización comprobada en servidor. La decisión de monorepo, repositorios separados o estructura exacta está **PENDIENTE DE CONFIRMACIÓN**.
-
-Al adoptar una base de datos deberán coordinarse:
-
-- Migraciones antes de promover una versión incompatible.
-- Variables separadas para Preview y Production.
-- Verificación de Row Level Security.
-- Auditoría administrativa.
-- Procedimiento de rollback de aplicación y datos.
-
-## PENDIENTES DE CONFIRMACIÓN
-
-- Versión mínima oficial de Node.js.
-- Contenido de las cuatro recomendaciones actuales de Vercel.
-- Estrategia de ramas y previews.
-- Responsable y procedimiento formal de rollback.
-- Regiones y límites de funciones.
-- Estructura de despliegue de la aplicación administrativa.
-- Estrategia de migraciones de la futura base de datos.
+La hoja de Google puede conservarse temporalmente como respaldo, pero la aplicación ya no debe tener acceso a ella.

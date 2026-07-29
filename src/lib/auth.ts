@@ -1,43 +1,13 @@
-export const validateEmail = async (email: string): Promise<boolean> => {
-  try {
-    const response = await fetch('/api/auth/validate-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    });
+import { createClient } from "@/lib/supabase/client";
 
-    if (!response.ok) {
-      throw new Error('Error validating email');
-    }
+export async function signIn(email: string, password: string) {
+  return createClient().auth.signInWithPassword({ email, password });
+}
 
-    const data = await response.json();
-    return data.isValid;
-  } catch (error) {
-    console.error('Error validating email:', error);
-    return false;
-  }
-};
+export async function signOut() {
+  return createClient().auth.signOut();
+}
 
-export const validatePin = async (email: string, pin: string): Promise<boolean> => {
-  try {
-    const response = await fetch('/api/auth/validate-pin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, pin }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Error validating PIN');
-    }
-
-    const data = await response.json();
-    return data.isValid;
-  } catch (error) {
-    console.error('Error validating PIN:', error);
-    return false;
-  }
-};
+export async function changePassword(password: string) {
+  return createClient().auth.updateUser({ password });
+}
