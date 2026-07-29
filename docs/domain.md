@@ -32,7 +32,7 @@ El producto evolucionará hacia:
 
 ### Usuario
 
-Persona con una cuenta individual. En el MVP se valida mediante email/PIN en Google Sheets. En el futuro se prevé email/contraseña y posteriormente Google.
+Persona con una cuenta individual autenticada mediante email y contraseña en Supabase Auth. Las cuentas se crean manualmente; Google OAuth permanece como dirección futura.
 
 ### Tarea
 
@@ -153,7 +153,7 @@ Si el usuario excluye su contenido del análisis, se podrán conservar métricas
 ## Fuera del alcance actual
 
 - Conversaciones persistentes.
-- Cuentas en base de datos propia.
+- Perfiles, roles y datos de cuenta adicionales a Supabase Auth.
 - Roles.
 - Planes aplicados automáticamente.
 - Panel administrativo.

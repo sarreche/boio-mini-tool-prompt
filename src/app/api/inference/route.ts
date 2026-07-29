@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const HUGGINGFACE_URL = "https://router.huggingface.co/v1/chat/completions";
@@ -47,6 +48,16 @@ async function callModel(
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getClaims();
+
+    if (!data?.claims) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 },
+      );
+    }
+
     const { prompt, systemPrompt } = await req.json();
 
     if (!prompt) {

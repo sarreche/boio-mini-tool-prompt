@@ -1,55 +1,26 @@
 # Prompt Toolkit
 
-Prompt Toolkit es una aplicación web bilingüe que facilita tareas cotidianas con modelos de lenguaje a personas con poca experiencia tecnológica. Su MVP ofrece prompts prediseñados y una interfaz texto a texto.
+Prompt Toolkit es una aplicación web bilingüe que facilita tareas cotidianas con modelos de lenguaje a personas con poca experiencia tecnológica. El MVP ofrece prompts prediseñados y una interfaz texto a texto.
 
-El producto se encuentra en evolución: la dirección confirmada es convertir la botonera actual en una experiencia de chat con tareas guiadas, historial, métricas de utilidad y planes gratuito/pago.
+## Estado actual
 
-## Estado del producto
-
-### Implementado actualmente
-
-- Login en dos pasos mediante email y PIN.
-- Validación temporal de usuarios contra Google Sheets.
-- Sesión mediante una cookie con duración de dos horas.
+- Autenticación con email y contraseña mediante Supabase Auth.
+- Altas manuales, sin registro público ni recuperación automática.
+- Sesiones SSR verificadas en páginas protegidas y en `/api/inference`.
+- Cambio voluntario de contraseña desde la aplicación.
 - Interfaz en español e inglés.
-- Doce presets de prompts por idioma.
-- Inferencia texto a texto mediante OpenRouter o Hugging Face.
-- Fallback secuencial entre modelos gratuitos del proveedor seleccionado.
-- Despliegue automático en Vercel desde la rama `master`.
+- Inferencia mediante OpenRouter o Hugging Face con fallback entre modelos.
+- Despliegue en Vercel desde `master`.
 
-### Dirección futura confirmada
-
-- Interfaz principal tipo chat.
-- Inicio desde una tarea prediseñada o un chat vacío.
-- Preguntas aclaratorias adaptadas a la tarea.
-- Edición avanzada del prompt construido.
-- Conversaciones e historial persistentes.
-- Valoración útil/no útil y comentario opcional.
-- Métricas de uso y registro del modelo utilizado.
-- Plan gratuito y plan pago.
-- Tareas premium y límites mensuales.
-- Autenticación con email/contraseña y Google posteriormente.
-- Migración desde Google Sheets a una base de datos, probablemente Supabase.
-- Aplicación administrativa separada.
-
-La dirección futura no representa funcionalidad disponible actualmente.
+La experiencia de chat, conversaciones persistentes, perfiles, roles y planes continúan siendo dirección futura, no funcionalidad implementada.
 
 ## Stack
 
-- Next.js 15.5.4
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- Google APIs
-- OpenRouter
-- Hugging Face
+- Next.js 15 y React 19
+- TypeScript y Tailwind CSS 4
+- Supabase Auth con `@supabase/ssr`
+- OpenRouter o Hugging Face
 - Vercel
-
-## Requisitos
-
-- Node.js y npm. La versión mínima oficial está **PENDIENTE DE CONFIRMACIÓN**.
-- Una cuenta de servicio de Google con permiso de lectura sobre la hoja configurada.
-- Al menos un token válido de OpenRouter o Hugging Face.
 
 ## Instalación
 
@@ -59,125 +30,60 @@ cd boio-mini-tool-prompt
 npm ci
 ```
 
-## Variables de entorno
-
-Crear `.env.local` sin versionarlo:
+Crear `.env.local` a partir de `.env.example`:
 
 ```dotenv
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+
 OPENROUTER_TOKEN=
 HUGGINGFACE_TOKEN=
 DEFAULT_MODEL=OR
-
-GOOGLE_SHEETS_ID=
-GOOGLE_SHEETS_RANGE=
-GOOGLE_SERVICE_ACCOUNT_EMAIL=
-GOOGLE_PRIVATE_KEY=
 ```
 
-`DEFAULT_MODEL` admite en el código actual:
+La publishable key puede usarse en el navegador. Nunca configurar una clave `service_role` o `sb_secret_...` en una variable `NEXT_PUBLIC_*`.
 
-- `OR`: utiliza OpenRouter.
-- `HF`: utiliza Hugging Face.
+## Configuración de Supabase
 
-Solo se intenta el proveedor seleccionado. El fallback actual ocurre entre sus modelos, no entre proveedores.
+1. Habilitar Email/Password en Authentication.
+2. Deshabilitar el registro público.
+3. Configurar Site URL y redirect URLs para producción, previews y `http://localhost:3000`.
+4. Crear cada usuario manualmente con email confirmado y una contraseña temporal robusta.
+5. Comunicar la contraseña por un canal privado y recomendar su cambio desde la aplicación. La configuración actual exige al menos 8 caracteres, con letras y números.
 
-`IS_DEVELOPMENT` aparece en el entorno local inspeccionado, pero no es consumida por el código.
+Sin correo automático, un administrador debe asignar una nueva contraseña temporal cuando un usuario la olvida.
 
-## Google Sheets
-
-La autenticación del MVP presupone:
-
-- Email en la segunda columna de cada fila (`row[1]`).
-- PIN en la tercera columna (`row[2]`).
-- Acceso de solo lectura para la cuenta de servicio.
-
-La estructura completa de la hoja y sus encabezados están **PENDIENTES DE CONFIRMACIÓN**. Esta integración es temporal y será reemplazada.
-
-## Desarrollo
+## Desarrollo y verificación
 
 ```bash
 npm run dev
+npm run lint
+npm run build
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000).
 
-En PowerShell con ejecución de scripts deshabilitada:
+No existe actualmente una suite de tests automatizados. Los flujos de login, logout, cambio de contraseña, protección de páginas e inferencia deben verificarse manualmente.
 
-```powershell
-npm.cmd run dev
-```
-
-## Comandos
-
-| Comando | Función |
-|---|---|
-| `npm run dev` | Servidor de desarrollo con Turbopack |
-| `npm run lint` | ESLint |
-| `npm run build` | Build de producción con Turbopack |
-| `npm run start` | Sirve el build de producción |
-
-No existe actualmente un comando de tests.
-
-## Flujos principales
-
-### Login
+## Flujos
 
 ```text
 /login
-  -> valida email en Google Sheets
-  -> solicita PIN
-  -> valida email + PIN
-  -> crea cookie isAuthenticated
-  -> redirige a /prompts
-```
+  -> Supabase Auth
+  -> cookies de sesión SSR
+  -> /prompts
 
-### Inferencia
-
-```text
-texto del usuario
-  -> preset opcional
-  -> /api/inference
+/api/inference
+  -> verifica identidad con Supabase
   -> proveedor configurado
-  -> modelos gratuitos en orden
-  -> primera respuesta exitosa
+  -> fallback de modelos
 ```
-
-Consultar [docs/architecture.md](docs/architecture.md) para el detalle técnico.
-
-## Seguridad y limitaciones actuales
-
-- La autenticación mediante Google Sheets y cookie booleana pertenece al MVP.
-- El middleware protege páginas, pero no intercepta `/api/*`.
-- `/api/inference` no valida actualmente una sesión.
-- El cliente puede enviar el `systemPrompt`.
-- No hay rate limiting, historial, roles ni auditoría.
-- No hay validación formal de los cuerpos JSON.
-- No hay tests automatizados ni CI versionada.
-- El build necesita acceso a Google Fonts para descargar Geist.
-
-Estos puntos describen el sistema actual; no representan necesariamente la arquitectura objetivo.
 
 ## Documentación
 
 - [Arquitectura](docs/architecture.md)
-- [Dominio y producto](docs/domain.md)
+- [Dominio](docs/domain.md)
 - [Despliegue](docs/deployment.md)
-- [Guía para agentes y mantenedores](AGENTS.md)
+- [Guía del repositorio](AGENTS.md)
 
-## Despliegue
-
-Producción está alojada en Vercel:
-
-- URL: [https://minitoolprompt.vercel.app](https://minitoolprompt.vercel.app)
-- Rama de producción: `master`
-- Deploy automático al hacer push a `master`
-
-Ver [docs/deployment.md](docs/deployment.md).
-
-## PENDIENTES DE CONFIRMACIÓN
-
-- Versión mínima de Node.js.
-- Estructura formal completa de Google Sheets mientras continúe activa.
-- Cantidades exactas de usos del plan gratuito y pruebas premium.
-- Política operativa de mantenimiento de datos retenidos.
-- Momento y alcance definitivo de la migración a Supabase.
+Producción: [https://minitoolprompt.vercel.app](https://minitoolprompt.vercel.app)

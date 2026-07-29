@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { promptsI18n } from "@/lib/i18n";
 import PromptButton, { PromptPreset } from "@/components/PromptButtons";
 import Image from "next/image";
+import Link from "next/link";
+import { signOut } from "@/lib/auth";
 
 export default function PromptsClient({ initialLang }: { initialLang: "es" | "en"}) {
   const [currentLang, setCurrentLang] = useState<"es" | "en">(initialLang ?? "es");
@@ -73,11 +75,12 @@ export default function PromptsClient({ initialLang }: { initialLang: "es" | "en
     setOutput("");
   };
 
- const handleLogout = async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-    });
-    // Redirigir al login
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      console.error("Supabase logout failed:", error.code);
+      return;
+    }
     window.location.href = "/login";
   };
 
@@ -91,6 +94,12 @@ export default function PromptsClient({ initialLang }: { initialLang: "es" | "en
           <h1 className="text-2xl font-bold">{t.title}</h1>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href={`/account/password?lang=${currentLang}`}
+            className="rounded border border-slate-600 px-3 py-1 text-sm text-slate-300 hover:bg-slate-700"
+          >
+            {t.changePasswordButton}
+          </Link>
           <select
             value={currentLang}
             onChange={(e) => setCurrentLang(e.target.value as "es" | "en")}
