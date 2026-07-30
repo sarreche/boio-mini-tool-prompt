@@ -36,6 +36,17 @@ El usuario `sarreche+root@gmail.com` es el `root` inicial.
 Los estados de suscripción son `pending`, `active`, `past_due`, `cancelled` y
 `expired`.
 
+## Solicitudes de acceso y consultas
+
+`access_requests` registra solicitudes públicas de acceso Free y consultas de
+soporte. No representa una compra ni activa una cuenta o suscripción. Cada
+solicitud comienza en `pending` y puede pasar a `in_review`, `approved`,
+`rejected` o `closed` durante su procesamiento manual.
+
+La tabla tiene RLS habilitado y no concede permisos a `anon` ni `authenticated`.
+La escritura se realiza mediante una acción de servidor con `service_role`.
+El futuro panel administrativo deberá registrar en auditoría cada cambio de estado.
+
 ## Conversaciones y tareas
 
 El esquema incluye:

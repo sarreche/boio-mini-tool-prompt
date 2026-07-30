@@ -9,9 +9,13 @@ Navegador
   |
   +-- /login ---------- Supabase Auth
   |
+  +-- /contact -------- acción de servidor -------- Supabase Postgres
+  |
   +-- /prompts
          |
          +-- /account/password
+         |
+         +-- /plans (vista informativa, sin checkout)
          |
          +-- /api/inference
                   |
@@ -23,6 +27,8 @@ Navegador
 
 - Supabase Auth con email y contraseña.
 - Las cuentas se crean manualmente; no hay registro público.
+- `/contact` permite solicitar acceso Free o enviar una consulta. El envío no crea
+  una cuenta: registra una solicitud pendiente para revisión manual.
 - `@supabase/ssr` mantiene la sesión en cookies.
 - El middleware renueva la sesión y valida la identidad con `getClaims()`.
 - `/prompts` y `/account/*` requieren sesión válida.
@@ -33,7 +39,8 @@ Navegador
 
 Supabase Postgres contiene ahora las tablas base para perfiles, roles, planes,
 suscripciones, conversaciones, uso y auditoría. La interfaz actual todavía no
-consume estas tablas y la aplicación no utiliza una clave privilegiada.
+consume la mayoría de estas tablas. La acción de `/contact` usa una clave
+privilegiada exclusivamente en el servidor para registrar solicitudes.
 
 Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 
@@ -44,6 +51,7 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 | `src/middleware.ts` | Protección y redirecciones |
 | `src/lib/supabase/*` | Clientes de navegador, servidor y middleware |
 | `src/app/(auth)/login/page.tsx` | Login email/contraseña |
+| `src/app/contact/*` | Formulario público y acción de servidor para solicitudes |
 | `src/app/account/password/page.tsx` | Cambio voluntario de contraseña |
 | `src/app/api/inference/route.ts` | Autorización, inferencia y fallback |
 | `src/lib/i18n.ts` | Textos bilingües y presets |

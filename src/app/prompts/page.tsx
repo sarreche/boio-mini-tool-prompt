@@ -1,11 +1,12 @@
 import PromptsClient from "./PromptsPage";
 
-type Props = { searchParams: { lang?: string } };
+type Props = { searchParams: Promise<{ lang?: string }> };
 
 const ALLOWED = new Set(["es","en"]);
 
-export default function Page({ searchParams }: Props) {
-  const raw = (searchParams.lang ?? "en").toLowerCase();;
+export default async function Page({ searchParams }: Props) {
+  const { lang: requestedLang } = await searchParams;
+  const raw = (requestedLang ?? "es").toLowerCase();
   const lang = ALLOWED.has(raw) ? (raw as "es"|"en") : "en";
 
   return (
