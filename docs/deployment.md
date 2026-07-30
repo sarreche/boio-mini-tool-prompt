@@ -55,6 +55,9 @@ Sin SMTP ni correos automáticos, la recuperación consiste en que el administra
 4. Confirmar que `/api/inference` devuelve `401` sin sesión.
 5. Probar inferencia, fallback entre proveedores, persistencia de ejecución, cambio
    de contraseña y logout.
+   Para el fallback, comprobar al menos `429` con `Retry-After` corto y largo,
+   `503`, `402`, respuesta no JSON y éxito del modelo siguiente. Confirmar que la
+   respuesta al navegador no contiene detalles del proveedor.
 6. Verificar español e inglés.
 7. Revisar logs y ejecutar los asesores de seguridad de Supabase.
 8. No promover hasta completar la revisión.

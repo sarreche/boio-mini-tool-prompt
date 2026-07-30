@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "test": "node --experimental-strip-types --test src/app/api/inference/provider.test.ts",
     "start": "next start",
     "lint": "eslint"
   },

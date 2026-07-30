@@ -65,9 +65,17 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
    `active_model_routes`.
 5. Se crea una ejecución pendiente y un intento por cada modelo utilizado.
 6. Los modelos se recorren por prioridad, incluso entre proveedores diferentes.
-7. Una respuesta exitosa completa transaccionalmente el intento, la ejecución y el
+   Los errores `402`, `429`, `503`, otros errores HTTP, respuestas inválidas y
+   fallos de red se clasifican y registran antes de continuar con el siguiente
+   modelo.
+7. Un `429` o `503` solo se reintenta una vez en el mismo modelo cuando el
+   proveedor envía `Retry-After` y la espera indicada no supera dos segundos. Una
+   espera mayor omite el reintento y activa inmediatamente el fallback.
+8. Una respuesta exitosa completa transaccionalmente el intento, la ejecución y el
    evento de uso.
-8. Si todos fallan, se persisten los intentos y se devuelve HTTP 503.
+9. Si todos fallan, se persisten los intentos y se devuelve HTTP 503 con un código
+   estable y un mensaje accionable. Los detalles técnicos quedan solamente en el
+   servidor y la base de datos.
 
 No hay streaming ni conversación multi-turno. La persistencia actual registra
 ejecuciones, intentos y uso, pero todavía no crea conversaciones o mensajes desde
