@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-
-type Message = {
-  role: "system" | "user" | "assistant";
-  content: string;
-};
+import {
+  callModel,
+  ProviderRequestError,
+  type ProviderMessage,
+} from "./provider";
 
 type ModelRoute = {
   route_code: string;
@@ -17,44 +17,6 @@ type ModelRoute = {
   base_url: string;
   token_env_var: string;
 };
-
-async function callModel(
-  url: string,
-  token: string,
-  model: string,
-  messages: Message[],
-) {
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ model, messages }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
-  }
-
-  const data = await res.json();
-  const text = data?.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error("Provider returned no usable content");
-  }
-
-  return {
-    text: String(text),
-    inputTokens:
-      typeof data?.usage?.prompt_tokens === "number"
-        ? data.usage.prompt_tokens
-        : null,
-    outputTokens:
-      typeof data?.usage?.completion_tokens === "number"
-        ? data.usage.completion_tokens
-        : null,
-  };
-}
 
 export async function POST(req: Request) {
   const requestStartedAt = Date.now();
@@ -79,12 +41,13 @@ export async function POST(req: Request) {
       typeof body?.prompt === "string" ? body.prompt.trim() : "";
     const systemPrompt =
       typeof body?.systemPrompt === "string" ? body.systemPrompt.trim() : "";
+    const lang = body?.lang === "en" ? "en" : "es";
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt requerido" }, { status: 400 });
     }
 
-    const messages: Message[] = [
+    const messages: ProviderMessage[] = [
       {
         role: "system",
         content: systemPrompt || "You are a helpful assistant.",
@@ -156,8 +119,6 @@ export async function POST(req: Request) {
     }
 
     executionId = execution.id;
-    const errors: string[] = [];
-
     for (const [index, model] of modelRoute.entries()) {
       const attemptStartedAt = Date.now();
       const { data: attempt, error: attemptError } = await admin
@@ -220,17 +181,32 @@ export async function POST(req: Request) {
           text: result.text,
         });
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
+        const providerError =
+          err instanceof ProviderRequestError ? err : null;
+        const message =
+          err instanceof Error ? err.message : "Unknown provider error";
         const latencyMs = Date.now() - attemptStartedAt;
-        errors.push(`${model.provider_code}/${model.model_code}: ${message}`);
+        const errorDetail = [
+          `provider=${model.provider_code}`,
+          `model=${model.model_code}`,
+          providerError?.status ? `http_status=${providerError.status}` : null,
+          providerError?.retryAfterMs !== null &&
+          providerError?.retryAfterMs !== undefined
+            ? `retry_after_ms=${providerError.retryAfterMs}`
+            : null,
+          `message=${providerError?.detail ?? message}`,
+        ]
+          .filter(Boolean)
+          .join("; ")
+          .slice(0, 1_000);
 
         const { error: attemptUpdateError } = await admin
           .from("execution_attempts")
           .update({
             status: "failed",
             latency_ms: latencyMs,
-            error_code: "model_attempt_failed",
-            error_detail: message,
+            error_code: providerError?.code ?? "model_attempt_failed",
+            error_detail: errorDetail,
             completed_at: new Date().toISOString(),
           })
           .eq("id", attempt.id)
@@ -265,7 +241,14 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: "No hay modelos disponibles", details: errors },
+      {
+        error:
+          lang === "en"
+            ? "The free models are temporarily unavailable. Please try again in a few minutes."
+            : "Los modelos gratuitos no están disponibles temporalmente. Volvé a intentar en unos minutos.",
+        code: "all_models_temporarily_unavailable",
+        executionId,
+      },
       { status: 503 },
     );
   } catch (err: unknown) {
@@ -284,6 +267,18 @@ export async function POST(req: Request) {
         .eq("status", "pending");
     }
 
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("Inference request failed", {
+      executionId,
+      error: message,
+    });
+
+    return NextResponse.json(
+      {
+        error: "No se pudo procesar la solicitud de inferencia.",
+        code: "inference_internal_error",
+        executionId,
+      },
+      { status: 500 },
+    );
   }
 }
