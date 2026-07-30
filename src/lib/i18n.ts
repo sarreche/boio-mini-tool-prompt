@@ -1,31 +1,101 @@
-
 export const loginI18n = {
   es: {
     title: "Prompt Toolkit",
-    welcomeMessage: "¡Bienvenido!",
+    heroTitle: "Tu ayuda para resolver tareas cotidianas",
+    heroDescription: "Explicá, resumí, escribí, traducí y organizá ideas de forma clara y sencilla.",
+    formTitle: "Iniciar sesión",
+    formDescription: "Ingresá con la cuenta que te proporcionamos.",
     languageLabel: "Idioma",
-    emailLabel: "Email",
-    emailPlaceholder: "Ingrese su email",
+    emailLabel: "Correo electrónico",
+    emailPlaceholder: "nombre@ejemplo.com",
     passwordLabel: "Contraseña",
-    passwordPlaceholder: "Ingrese su contraseña",
+    passwordPlaceholder: "Ingresá tu contraseña",
+    showPassword: "Mostrar contraseña",
+    hidePassword: "Ocultar contraseña",
     loginButton: "Ingresar",
     loading: "Ingresando...",
-    errorCredentials: "Email o contraseña incorrectos.",
-    accountHelp: "Las cuentas son creadas por el administrador.",
+    errorCredentials: "El correo o la contraseña son incorrectos.",
+    accountHelp: "¿Necesitás ayuda o querés solicitar acceso Free?",
+    accountHelpAction: "Contactanos",
+    securityNote: "Tus datos de acceso se procesan de forma segura.",
   },
   en: {
     title: "Prompt Toolkit",
-    welcomeMessage: "Welcome!",
+    heroTitle: "Everyday tasks, made easier",
+    heroDescription: "Explain, summarize, write, translate, and organize ideas clearly and simply.",
+    formTitle: "Sign in",
+    formDescription: "Use the account provided to you.",
     languageLabel: "Language",
     emailLabel: "Email",
-    emailPlaceholder: "Enter your email",
+    emailPlaceholder: "name@example.com",
     passwordLabel: "Password",
     passwordPlaceholder: "Enter your password",
-    loginButton: "Login",
+    showPassword: "Show password",
+    hidePassword: "Hide password",
+    loginButton: "Sign in",
     loading: "Signing in...",
     errorCredentials: "Incorrect email or password.",
-    accountHelp: "Accounts are created by the administrator.",
-  }
+    accountHelp: "Need help or want to request Free access?",
+    accountHelpAction: "Contact us",
+    securityNote: "Your sign-in details are processed securely.",
+  },
+};
+
+export const contactI18n = {
+  es: {
+    language: "Idioma",
+    back: "Volver al inicio de sesión",
+    eyebrow: "Contacto",
+    title: "¿Cómo podemos ayudarte?",
+    subtitle: "Enviá una consulta o solicitá una cuenta Free. Nuestro equipo revisará tu solicitud y te responderá por correo.",
+    typeLabel: "Tipo de solicitud",
+    freeType: "Solicitar acceso Free",
+    freeDescription: "Pedí una cuenta para empezar a usar las herramientas esenciales.",
+    supportType: "Hacer una consulta",
+    supportDescription: "Consultanos por tu cuenta, el acceso o el funcionamiento de la app.",
+    nameLabel: "Nombre",
+    namePlaceholder: "Tu nombre",
+    emailLabel: "Correo electrónico",
+    emailPlaceholder: "nombre@ejemplo.com",
+    messageLabel: "Contanos un poco más",
+    freeMessagePlaceholder: "¿Para qué te gustaría usar Prompt Toolkit?",
+    supportMessagePlaceholder: "Escribí tu consulta con el mayor detalle posible.",
+    privacy: "Usaremos estos datos únicamente para responder y procesar tu solicitud. No incluyas contraseñas ni información sensible.",
+    submit: "Enviar solicitud",
+    submitting: "Enviando...",
+    successTitle: "Recibimos tu solicitud",
+    successDescription: "La revisaremos y te responderemos al correo que indicaste. El envío no crea una cuenta ni activa un plan automáticamente.",
+    sendAnother: "Enviar otra solicitud",
+    validationError: "Revisá los datos e intentá nuevamente.",
+    serverError: "No pudimos guardar la solicitud. Intentá nuevamente en unos minutos.",
+  },
+  en: {
+    language: "Language",
+    back: "Back to sign in",
+    eyebrow: "Contact",
+    title: "How can we help?",
+    subtitle: "Send a question or request a Free account. Our team will review your request and reply by email.",
+    typeLabel: "Request type",
+    freeType: "Request Free access",
+    freeDescription: "Ask for an account to start using the essential tools.",
+    supportType: "Ask a question",
+    supportDescription: "Contact us about your account, access, or how the app works.",
+    nameLabel: "Name",
+    namePlaceholder: "Your name",
+    emailLabel: "Email",
+    emailPlaceholder: "name@example.com",
+    messageLabel: "Tell us a little more",
+    freeMessagePlaceholder: "How would you like to use Prompt Toolkit?",
+    supportMessagePlaceholder: "Describe your question in as much detail as possible.",
+    privacy: "We will use this information only to reply and process your request. Do not include passwords or sensitive information.",
+    submit: "Send request",
+    submitting: "Sending...",
+    successTitle: "We received your request",
+    successDescription: "We will review it and reply to the email you provided. Submitting does not automatically create an account or activate a plan.",
+    sendAnother: "Send another request",
+    validationError: "Review the information and try again.",
+    serverError: "We could not save your request. Please try again in a few minutes.",
+  },
 };
 
 export const accountI18n = {
@@ -40,8 +110,13 @@ export const accountI18n = {
     mismatch: "Las contraseñas no coinciden.",
     tooShort: "La contraseña debe tener al menos 8 caracteres.",
     requirements: "La contraseña debe incluir letras y números.",
+    requirementsHint: "Usá al menos 8 caracteres e incluí letras y números.",
     error: "No se pudo actualizar la contraseña.",
-    back: "Volver a los prompts",
+    back: "Volver al inicio",
+    securityTitle: "Protegé tu cuenta",
+    securityDescription: "Elegí una contraseña que no uses en otros servicios. Nunca compartas tu contraseña por correo o mensaje.",
+    showPassword: "Mostrar contraseña",
+    hidePassword: "Ocultar contraseña",
   },
   en: {
     title: "Change password",
@@ -54,148 +129,220 @@ export const accountI18n = {
     mismatch: "Passwords do not match.",
     tooShort: "The password must have at least 8 characters.",
     requirements: "The password must include letters and numbers.",
+    requirementsHint: "Use at least 8 characters and include letters and numbers.",
     error: "The password could not be updated.",
-    back: "Back to prompts",
+    back: "Back to home",
+    securityTitle: "Protect your account",
+    securityDescription: "Choose a password you do not use for other services. Never share it by email or message.",
+    showPassword: "Show password",
+    hidePassword: "Hide password",
   },
 };
 
 export const promptsI18n = {
   es: {
-    title: "Botonera de Prompts",
-    subtitle: "Tu asistente de IA que siempre responde (solo texto a texto)",
-    userInput: "Entrada del usuario",
-    userInputPlaceholder: "Escribí tu consulta o usá los botones de abajo...",
-    buttonsLabel: "Botonera de prompts",
-    execute: "▶ Ejecutar",
-    clear: "Limpiar",
+    title: "¿Qué necesitás resolver hoy?",
+    subtitle: "Contanos qué necesitás y te ayudamos a resolverlo.",
+    inputPlaceholder: "Escribí tu consulta o pegá el texto que querés trabajar...",
+    start: "Empezar",
+    stop: "Detener",
+    newConversation: "Nueva conversación",
+    home: "Inicio",
+    allTasks: "Todas las tareas",
+    history: "Historial",
+    emptyHistory: "Tus conversaciones aparecerán acá cuando estén disponibles.",
+    plan: "Plan Free",
+    planDescription: "Herramientas esenciales para el día a día.",
+    premium: "Conocer Premium",
+    taskPrompt: "Elegí una tarea para empezar",
     response: "Respuesta",
+    preparing: "Preparando tu respuesta...",
+    preparingNote: "Podés quedarte acá; te avisamos cuando esté lista.",
+    generatedNote: "Respuesta generada con IA. Revisá la información importante.",
+    copy: "Copiar",
+    copied: "Copiado",
+    useful: "¿Te sirvió esta respuesta?",
+    clear: "Limpiar",
     changePasswordButton: "Cambiar contraseña",
-    logoutButton: 'Salir',
+    logoutButton: "Salir",
+    edit: "Editar",
+    yourRequest: "Tu solicitud",
+    assistant: "Asistente",
+    languageLabel: "Idioma",
+    accountLabel: "Abrir opciones de cuenta",
+    tools: "Herramientas",
+    chooseTool: "Cambiar de tarea",
     status: {
-      consulting: "Consultando modelos...",
-      ready: "Listo (modelo: {0})",
-      error: "Error",
-      noInput: "Ingresá texto o usá un botón."
+      error: "No pudimos completar la solicitud. Intentá nuevamente.",
+      noInput: "Ingresá un texto para continuar.",
     },
+    categories: [
+      { title: "Entender y resumir", description: "Transformá información en claridad." },
+      { title: "Escribir y responder", description: "Mejorá tus textos y comunicaciones." },
+      { title: "Crear y organizar", description: "Generá ideas y poné en orden tus planes." },
+    ],
     presets: [
-        {
-          label: "Explicar simple",
-          build: (txt: string) => `Explica esto como si tuviera 10 años:\n\n${txt}`
-        },
-        {
-          label: "Resumir en bullets",
-          build: (txt: string) => `Resume en 5 puntos:\n\n${txt}`
-        },
-        {
-          label: "Traducir a inglés",
-          build: (txt: string) => `Traduce al inglés:\n\n${txt}`
-        },
-        {
-          label: "Mejorar redacción",
-          build: (txt: string) => `Reescribe de forma clara y neutral:\n\n${txt}`
-        },
-        {
-          label: "Correo breve",
-          build: (txt: string) => `Redacta un email corto y profesional sobre:\n\n${txt}`
-        },
-        {
-          label: "Ideas creativas",
-          build: (txt: string) => `Dame 10 ideas creativas sobre:\n\n${txt}`
-        },
-        {
-          label: "Speech de 1 minuto",
-          build: (txt: string) => `Ayúdame a preparar un speech de 1 minuto para presentar:\n\n${txt}`
-        },
-        {
-            label: "Cuentos cortos",
-            build: (txt: string) => `Inventa un cuento corto para contar a un niño de [edad]:\n\n${txt}`
-        },
-        {
-            label: "Checklist",
-            build: (txt: string) => `Dame un checklist de cosas a considerar para:\n\n${txt}`
-        },
-        {
-            label: "Cocinar con...",
-            build: (txt: string) => `Decime qué puedo cocinar con estos ingredientes:\n\n${txt}`
-        },
-        {
-            label: "WhatsApp amable",
-            build: (txt: string) => `Ayudame a contestar un mensaje de WhatsApp de manera amable:\n\n${txt}`
-        },
-        {
-            label: "Guía rápida",
-            build: (txt: string) => `Dame una guía rápida para:\n\n${txt}`
-        },
-      ],
-    systemPrompt: "Sos un asistente claro y práctico en español."
+      { label: "Explicar simple", description: "Entendé un tema con palabras simples.", build: (txt: string) => `Explica esto como si tuviera 10 años:\n\n${txt}` },
+      { label: "Resumir", description: "Obtené lo esencial en cinco puntos.", build: (txt: string) => `Resume en 5 puntos:\n\n${txt}` },
+      { label: "Traducir a inglés", description: "Traducí de forma clara y natural.", build: (txt: string) => `Traduce al inglés:\n\n${txt}` },
+      { label: "Guía rápida", description: "Conseguí pasos breves y prácticos.", build: (txt: string) => `Dame una guía rápida para:\n\n${txt}` },
+      { label: "Mejorar redacción", description: "Hacé tu texto más claro y correcto.", build: (txt: string) => `Reescribe de forma clara y neutral:\n\n${txt}` },
+      { label: "Correo breve", description: "Redactá un correo claro y profesional.", build: (txt: string) => `Redacta un email corto y profesional sobre:\n\n${txt}` },
+      { label: "WhatsApp amable", description: "Respondé con el tono adecuado.", build: (txt: string) => `Ayudame a contestar un mensaje de WhatsApp de manera amable:\n\n${txt}` },
+      { label: "Speech de 1 minuto", description: "Prepará una presentación breve.", build: (txt: string) => `Ayúdame a preparar un speech de 1 minuto para presentar:\n\n${txt}` },
+      { label: "Ideas creativas", description: "Explorá nuevas ideas y soluciones.", build: (txt: string) => `Dame 10 ideas creativas sobre:\n\n${txt}` },
+      { label: "Cuentos cortos", description: "Creá una historia breve.", build: (txt: string) => `Inventa un cuento corto para contar a un niño de [edad]:\n\n${txt}` },
+      { label: "Checklist", description: "Armá una lista para no olvidar nada.", build: (txt: string) => `Dame un checklist de cosas a considerar para:\n\n${txt}` },
+      { label: "Cocinar con...", description: "Usá los ingredientes que ya tenés.", build: (txt: string) => `Decime qué puedo cocinar con estos ingredientes:\n\n${txt}` },
+    ],
+    systemPrompt: "Sos un asistente claro y práctico en español.",
   },
   en: {
-    title: "Prompt Toolkit",
-    subtitle: "Your AI assistant that always responds (text-to-text only)",
-    userInput: "User input",
-    userInputPlaceholder: "Write your query or use the buttons below...",
-    buttonsLabel: "Prompt buttons",
-    execute: "▶ Run",
-    clear: "Clear",
+    title: "What do you need help with today?",
+    subtitle: "Tell us what you need and we'll help you solve it.",
+    inputPlaceholder: "Write your request or paste the text you want to work with...",
+    start: "Start",
+    stop: "Stop",
+    newConversation: "New conversation",
+    home: "Home",
+    allTasks: "All tasks",
+    history: "History",
+    emptyHistory: "Your conversations will appear here when they become available.",
+    plan: "Free plan",
+    planDescription: "Essential tools for everyday tasks.",
+    premium: "Explore Premium",
+    taskPrompt: "Choose a task to get started",
     response: "Response",
+    preparing: "Preparing your response...",
+    preparingNote: "You can stay here; we'll let you know when it's ready.",
+    generatedNote: "AI-generated response. Review important information.",
+    copy: "Copy",
+    copied: "Copied",
+    useful: "Was this response useful?",
+    clear: "Clear",
     changePasswordButton: "Change password",
-    logoutButton: 'Logout',
+    logoutButton: "Log out",
+    edit: "Edit",
+    yourRequest: "Your request",
+    assistant: "Assistant",
+    languageLabel: "Language",
+    accountLabel: "Open account options",
+    tools: "Tools",
+    chooseTool: "Change task",
     status: {
-      consulting: "Consulting models...",
-      ready: "Done (model: {0})",
-      error: "Error",
-      noInput: "Enter text or use a button."
+      error: "We couldn't complete the request. Please try again.",
+      noInput: "Enter some text to continue.",
     },
+    categories: [
+      { title: "Understand and summarize", description: "Turn information into clarity." },
+      { title: "Write and respond", description: "Improve your writing and communications." },
+      { title: "Create and organize", description: "Generate ideas and organize your plans." },
+    ],
     presets: [
-        {
-          label: "Simple explain",
-          build: (txt: string) => `Explain this like I'm 10 years old:\n\n${txt}`
-        },
-        {
-          label: "Bullet summary",
-          build: (txt: string) => `Summarize in 5 points:\n\n${txt}`
-        },
-        {
-          label: "Translate to Spanish",
-          build: (txt: string) => `Translate to Spanish:\n\n${txt}`
-        },
-        {
-          label: "Improve writing",
-          build: (txt: string) => `Rewrite this clearly and neutrally:\n\n${txt}`
-        },
-        {
-          label: "Brief email",
-          build: (txt: string) => `Write a short professional email about:\n\n${txt}`
-        },
-        {
-          label: "Creative ideas",
-          build: (txt: string) => `Give me 10 creative ideas about:\n\n${txt}`
-        },
-        {
-          label: "1-minute speech",
-          build: (txt: string) => `Help me prepare a 1-minute speech to speak about:\n\n${txt}`
-        },
-        {
-            label: "Story telling",
-            build: (txt: string) => `Make up a short story to tell a child of [age]:\n\n${txt}`
-        },
-        {
-            label: "Checklist",
-            build: (txt: string) => `Give me a checklist of things I should take to:\n\n${txt}`
-        },
-        {
-            label: "Cook with...",
-            build: (txt: string) => `Tell me what I can cook with those ingredients:\n\n${txt}`
-        },
-        {
-            label: "Polite Reply",
-            build: (txt: string) => `Help me reply politely to a WhatsApp message:\n\n${txt}`
-        },
-        {
-            label: "Quick Guide",
-            build: (txt: string) => `Give me a quick guide for:\n\n${txt}`
-        },
+      { label: "Explain simply", description: "Understand a topic in simple words.", build: (txt: string) => `Explain this like I'm 10 years old:\n\n${txt}` },
+      { label: "Summarize", description: "Get the essentials in five points.", build: (txt: string) => `Summarize in 5 points:\n\n${txt}` },
+      { label: "Translate to Spanish", description: "Translate clearly and naturally.", build: (txt: string) => `Translate to Spanish:\n\n${txt}` },
+      { label: "Quick guide", description: "Get short, practical steps.", build: (txt: string) => `Give me a quick guide for:\n\n${txt}` },
+      { label: "Improve writing", description: "Make your text clearer and correct.", build: (txt: string) => `Rewrite this clearly and neutrally:\n\n${txt}` },
+      { label: "Brief email", description: "Write a clear professional email.", build: (txt: string) => `Write a short professional email about:\n\n${txt}` },
+      { label: "Polite reply", description: "Reply with the right tone.", build: (txt: string) => `Help me reply politely to a WhatsApp message:\n\n${txt}` },
+      { label: "1-minute speech", description: "Prepare a short presentation.", build: (txt: string) => `Help me prepare a 1-minute speech about:\n\n${txt}` },
+      { label: "Creative ideas", description: "Explore new ideas and solutions.", build: (txt: string) => `Give me 10 creative ideas about:\n\n${txt}` },
+      { label: "Short story", description: "Create a brief story.", build: (txt: string) => `Make up a short story for a child of [age]:\n\n${txt}` },
+      { label: "Checklist", description: "Make a list so nothing is forgotten.", build: (txt: string) => `Give me a checklist of things to consider for:\n\n${txt}` },
+      { label: "Cook with...", description: "Use the ingredients you already have.", build: (txt: string) => `Tell me what I can cook with these ingredients:\n\n${txt}` },
+    ],
+    systemPrompt: "You are a clear and practical assistant. Respond in English.",
+  },
+};
+
+export const plansI18n = {
+  es: {
+    language: "Idioma",
+    eyebrow: "Planes",
+    title: "Elegí cómo querés usar Prompt Toolkit",
+    subtitle: "Empezá con las herramientas esenciales y pasá a Premium cuando necesites más posibilidades.",
+    comparisonLabel: "Comparación de planes",
+    current: "Plan actual",
+    recommended: "Premium",
+    keepUsing: "Seguir con Free",
+    howToSubscribe: "Cómo suscribirme",
+    pendingTitle: "Cantidades pendientes de confirmación.",
+    pendingDescription: "Los límites mensuales, las pruebas premium y el precio todavía no están definidos; por eso no mostramos cifras provisorias.",
+    processTitle: "Cómo funciona la suscripción",
+    processDescription: "La dirección confirmada para esta etapa mantiene el pago por Gumroad y la activación manual.",
+    purchaseTitle: "Suscribite mediante Gumroad",
+    purchaseDescription: "La compra se realiza de forma segura en Gumroad. Después, el equipo verifica la compra y activa Premium manualmente en tu cuenta.",
+    purchaseAction: "Comprar Premium en Gumroad",
+    back: "Volver a Prompt Toolkit",
+    free: {
+      name: "Free",
+      description: "Para resolver tareas cotidianas y conocer la experiencia.",
+      features: [
+        "Acceso a las tareas esenciales disponibles",
+        "Consultas de texto a texto",
+        "Selección entre español e inglés",
+        "Acceso seguro con tu cuenta",
       ],
-    systemPrompt: "You are a clear and practical assistant. In English."
-  }
+    },
+    paid: {
+      name: "Premium",
+      description: "Para quienes necesitan más capacidad y tareas especiales.",
+      features: [
+        "Todo lo incluido en el plan Free",
+        "Acceso futuro a tareas premium",
+        "Límites de uso ampliados cuando se definan",
+        "Exportación de conversaciones prevista",
+      ],
+    },
+    steps: [
+      { title: "Compra mediante Gumroad", description: "El pago se realizará desde el enlace oficial cuando esté disponible." },
+      { title: "Verificación de la compra", description: "El equipo comprobará la suscripción asociada a tu cuenta." },
+      { title: "Activación manual", description: "Un administrador activará Premium y te confirmará cuando esté listo." },
+    ],
+  },
+  en: {
+    language: "Language",
+    eyebrow: "Plans",
+    title: "Choose how you want to use Prompt Toolkit",
+    subtitle: "Start with essential tools and move to Premium when you need more possibilities.",
+    comparisonLabel: "Plan comparison",
+    current: "Current plan",
+    recommended: "Premium",
+    keepUsing: "Keep using Free",
+    howToSubscribe: "How to subscribe",
+    pendingTitle: "Quantities pending confirmation.",
+    pendingDescription: "Monthly limits, Premium trials, and pricing are not defined yet, so we do not show provisional figures.",
+    processTitle: "How the subscription works",
+    processDescription: "The confirmed direction for this stage keeps Gumroad payments and manual activation.",
+    purchaseTitle: "Subscribe through Gumroad",
+    purchaseDescription: "The purchase is completed securely on Gumroad. The team then verifies it and manually activates Premium on your account.",
+    purchaseAction: "Buy Premium on Gumroad",
+    back: "Back to Prompt Toolkit",
+    free: {
+      name: "Free",
+      description: "For everyday tasks and exploring the experience.",
+      features: [
+        "Access to available essential tasks",
+        "Text-to-text requests",
+        "Spanish and English support",
+        "Secure access with your account",
+      ],
+    },
+    paid: {
+      name: "Premium",
+      description: "For people who need more capacity and specialized tasks.",
+      features: [
+        "Everything included in Free",
+        "Future access to Premium tasks",
+        "Higher usage limits once defined",
+        "Planned conversation export",
+      ],
+    },
+    steps: [
+      { title: "Purchase through Gumroad", description: "Payment will happen through the official link once available." },
+      { title: "Purchase verification", description: "The team will verify the subscription linked to your account." },
+      { title: "Manual activation", description: "An administrator will activate Premium and confirm when it is ready." },
+    ],
+  },
 };

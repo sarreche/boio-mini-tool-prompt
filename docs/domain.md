@@ -10,6 +10,12 @@ El valor del producto no es enseñar sintaxis de prompts, sino reducir el esfuer
 
 El MVP presenta una caja de texto y una botonera de prompts prediseñados. El usuario puede aplicar una transformación, editar el texto resultante y enviarlo a un modelo.
 
+La interfaz incluye una vista informativa de planes en `/plans`. Compara el alcance general de `free` y `paid`, enlaza a la compra oficial en Gumroad y explica el proceso de activación manual. No muestra cantidades sin confirmar y todavía no aplica límites o capacidades por plan.
+
+Desde el login se puede abrir un formulario público para solicitar acceso Free o
+enviar una consulta. El formulario registra una solicitud pendiente para revisión
+manual; no crea usuarios ni activa planes automáticamente.
+
 Las tareas actuales incluyen explicación, resumen, traducción, mejora de redacción, correo, ideas, speech, cuentos, checklist, cocina, respuesta de WhatsApp y guía rápida.
 
 No todos los presets están confirmados como parte del catálogo futuro.
@@ -81,6 +87,11 @@ Conjunto de capacidades y límites. Se prevén al menos `free` y `paid`.
 ### Suscripción
 
 Acceso pago gestionado inicialmente mediante Gumroad y activado manualmente por un administrador.
+
+### Solicitud de acceso
+
+Pedido no comercial para obtener una cuenta Free o realizar una consulta. Se
+procesa manualmente y se mantiene separado de las compras y suscripciones.
 
 ### Archivo
 
