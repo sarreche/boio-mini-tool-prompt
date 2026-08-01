@@ -64,16 +64,20 @@ y tipos TXT/Markdown. Debe permanecer no público en todos los ambientes.
    Para el fallback, comprobar al menos `429` con `Retry-After` corto y largo,
    `503`, `402`, respuesta no JSON y éxito del modelo siguiente. Confirmar que la
    respuesta al navegador no contiene detalles del proveedor.
-6. Verificar español e inglés.
-7. Revisar logs y ejecutar los asesores de seguridad de Supabase.
-8. Probar acceso `/admin` con user, admin y root; suspensión inmediata, invitación
+6. Probar Free, Paid, excepción, límite, trial, regeneración y fallback exitoso.
+7. Probar adjuntos TXT/MD desde el primer mensaje, aislamiento y exportación Markdown.
+8. Verificar español e inglés.
+9. Revisar logs y ejecutar los asesores de seguridad de Supabase.
+10. Probar acceso `/admin` con user, admin y root; suspensión inmediata, invitación
    manual y restricciones exclusivas de root.
-8. No promover hasta completar la revisión.
+11. Probar solicitud, reautenticación, reintento y finalización de borrado.
+12. No promover hasta completar la revisión.
 
 ## Verificación local
 
 ```bash
 npm ci
+npm test
 npm run lint
 npm run build
 ```

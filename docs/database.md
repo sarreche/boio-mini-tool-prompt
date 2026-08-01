@@ -50,7 +50,7 @@ solicitud comienza en `pending` y puede pasar a `in_review`, `approved`,
 
 La tabla tiene RLS habilitado y no concede permisos a `anon` ni `authenticated`.
 La escritura se realiza mediante una acción de servidor con `service_role`.
-El futuro panel administrativo deberá registrar en auditoría cada cambio de estado.
+El panel integrado registra revisor, resolución y auditoría en cada cambio de estado.
 
 ## Conversaciones y tareas
 
@@ -129,8 +129,9 @@ Las funciones administrativas públicas están revocadas para `PUBLIC`, `anon` y
 sus eventos; root consulta el conjunto.
 
 `account_deletion_requests` registra el flujo de solicitud de borrado definitivo.
-La implementación del proceso que revoca sesiones y elimina datos continúa
-pendiente.
+`app_private.deletion_operations` coordina preparación, reintento y finalización
+idempotente. El proceso revoca sesiones, suspende inmediatamente, elimina Auth,
+datos por cascada y objetos de Storage, y conserva solo agregados anónimos.
 
 ## Cierre operativo
 
@@ -158,3 +159,15 @@ limpia Auth, datos en cascada y objetos de Storage.
 La interfaz administrativa integrada valida los roles en servidor y escribe un
 evento de auditoría por cada operación sensible. Los enlaces de invitación,
 contraseñas, tokens, secretos y contenido de conversaciones no se copian al log.
+
+## Uso efectivo del esquema
+
+Todas las tablas actuales de `public` y `app_private` participan en al menos un flujo
+de aplicación, una RPC transaccional, una consulta administrativa, una métrica o un
+proceso interno. Las tablas privadas como `usage_reservations`,
+`deletion_operations`, `subscription_events` y `anonymous_daily_metrics` no se
+consumen directamente desde el navegador: su acceso indirecto es deliberado.
+
+Esto no implica que todas las superficies administrativas sean CRUD completas. La
+edición/baja de algunas entidades, la paginación y la búsqueda global de usuarios
+continúan como pendientes funcionales, sin tablas huérfanas asociadas.

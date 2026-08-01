@@ -47,7 +47,8 @@ npm run start
 
 En Windows con una política de ejecución restrictiva puede ser necesario usar `npm.cmd`.
 
-No existe actualmente una suite de tests.
+Existe una suite inicial de tests de proveedor e inferencia; no cubre todavía todos
+los flujos de producto y administración.
 
 ## Reglas para cambios
 
@@ -139,17 +140,22 @@ Antes de entregar cambios:
 7. Si hay cambios de UI, ejecutar el inventario de regresión y comparar los estados afectados con la versión anterior.
 8. Confirmar que el diff no contiene cambios visibles o funcionales ajenos al alcance aprobado.
 
+## Producto: estado implementado
+
+- Chat persistente iniciado desde una tarea o desde entrada libre.
+- Conversaciones, mensajes, ejecuciones, modelos efectivos y valoraciones en Supabase.
+- Planes Free/Paid, límites configurables, tareas premium y pruebas manuales.
+- Gumroad con activación administrativa manual, sin sincronización automática.
+- Adjuntos privados TXT/MD y exportación Markdown condicionados por capacidad.
+- Panel administrativo integrado en `/admin` para roles `admin` y `root`.
+- Dashboard, auditoría, suspensión inmediata y borrado definitivo root.
+
 ## Producto: dirección futura confirmada
 
-- Evolucionar la caja de texto del MVP hacia una experiencia de chat.
-- Permitir iniciar desde una tarea o desde un chat vacío.
 - Usar aclaraciones generadas por el modelo para completar cada tarea.
 - Mantener el prompt visible/editable como opción avanzada.
-- Persistir conversaciones, mensajes, modelo utilizado, resultados y valoraciones.
-- Incorporar planes gratuito y pago con límites y tareas premium.
-- Mantener inicialmente Gumroad y la activación manual de suscripciones.
-- Ampliar Supabase desde Auth hacia persistencia de conversaciones y datos de producto.
-- Incorporar una aplicación administrativa separada para roles `root` y `admin`.
+- Completar CRUD, búsqueda y paginación de todas las operaciones administrativas.
+- Mostrar plan, consumo y renovación con mayor detalle en usuario y errores de cuota.
 
 Ver `docs/domain.md` y `docs/architecture.md` antes de diseñar funcionalidades nuevas.
 

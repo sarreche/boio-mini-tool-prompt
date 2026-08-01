@@ -11,11 +11,15 @@ Prompt Toolkit es una aplicación web bilingüe que facilita tareas cotidianas c
 - Interfaz en español e inglés.
 - Inferencia mediante OpenRouter y Hugging Face con catálogo y fallback dinámico
   configurados en Supabase.
+- Chat multi-turno con historial, valoraciones y catálogo bilingüe persistidos.
+- Planes Free/Paid, cuotas configurables, tareas premium y pruebas manuales.
+- Adjuntos privados TXT/MD y exportación Markdown para Paid o excepciones.
+- Panel `/admin` integrado para dashboard y operaciones de `admin` y `root`.
 - Despliegue en Vercel desde `master`.
 
-La base de datos para conversaciones, perfiles, roles, planes, métricas y auditoría
-ya está creada en Supabase. La interfaz de chat y la integración de estos datos con
-el MVP continúan como trabajo futuro.
+La persistencia de producto, autorización, consumo, métricas, auditoría y borrado
+definitivo está conectada a Supabase. Las cantidades comerciales permanecen
+configurables y sin valores predeterminados.
 
 ## Stack
 
@@ -63,13 +67,16 @@ Sin correo automático, un administrador debe asignar una nueva contraseña temp
 
 ```bash
 npm run dev
+npm test
 npm run lint
 npm run build
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000).
 
-No existe actualmente una suite de tests automatizados. Los flujos de login, logout, cambio de contraseña, protección de páginas e inferencia deben verificarse manualmente.
+Existe una suite inicial para clasificación, reintentos y saneamiento de errores de
+proveedores. Los flujos de autenticación, administración, adjuntos, exportación y
+borrado también requieren verificación manual.
 
 ## Flujos
 
@@ -81,8 +88,13 @@ No existe actualmente una suite de tests automatizados. Los flujos de login, log
 
 /api/inference
   -> verifica identidad con Supabase
-  -> proveedor configurado
+  -> reserva cuota o prueba premium
+  -> persiste conversación y ejecución
   -> fallback de modelos
+
+/admin/*
+  -> rol resuelto en servidor
+  -> dashboard y operaciones auditadas
 ```
 
 ## Documentación
