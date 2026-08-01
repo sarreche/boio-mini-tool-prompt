@@ -90,15 +90,18 @@ deben copiar texto de mensajes o respuestas a tablas analíticas.
 - `public.active_model_routes` expone la configuración activa solamente a
   `service_role`.
 
-La configuración actual de la ruta `default` usa únicamente
-`openai/gpt-oss-20b:free`, con prioridad `10`. Los demás modelos de OpenRouter y
-Hugging Face permanecen catalogados, pero sus reglas están inactivas para evitar
-esperas causadas por endpoints que no responden. Pueden reactivarse mediante una
-migración o una futura interfaz administrativa sin modificar el código de
-inferencia.
+La ruta `default` conserva `openai/gpt-oss-20b:free` como preferido y utiliza como
+alternativas gratuitas, en este orden, `openai/gpt-oss-120b:free` y
+`openrouter/free`. Esta última ruta delega en OpenRouter la selección de un modelo
+gratuito disponible. Los modelos de Hugging Face permanecen catalogados pero
+inactivos: sus créditos gratuitos son limitados y no se habilitan como fallback
+de producción sin confirmar antes la política de costos.
 
 `execution_attempts.model_id` conserva la relación con el catálogo, mientras
-`provider_code` y `model_code` mantienen un snapshot histórico.
+`provider_code` y `model_code` mantienen un snapshot histórico. Los intentos
+fallidos guardan un código normalizado, estado HTTP cuando existe, `Retry-After` y
+un mensaje acotado y saneado. No se persiste el cuerpo arbitrario del proveedor ni
+se devuelven estos detalles al cliente.
 
 `complete_inference_execution` finaliza atómicamente un intento exitoso, su
 ejecución y el evento de consumo. Solo `service_role` puede ejecutarla.
