@@ -17,6 +17,8 @@ Navegador
          |
          +-- /plans (vista informativa, sin checkout)
          |
+         +-- /admin/* (visible únicamente para admin/root)
+         |
          +-- /api/inference
                   |
                   +-- OpenRouter, o
@@ -31,7 +33,9 @@ Navegador
   una cuenta: registra una solicitud pendiente para revisión manual.
 - `@supabase/ssr` mantiene la sesión en cookies.
 - El middleware renueva la sesión y valida la identidad con `getClaims()`.
-- `/prompts` y `/account/*` requieren sesión válida.
+- `/prompts`, `/account/*` y `/admin/*` requieren sesión válida. Las rutas admin
+  validan además el rol en servidor desde `app_private.user_roles`.
+- Las APIs autenticadas comprueban el estado de suspensión en cada solicitud.
 - `/api/inference` repite la validación en el servidor y devuelve `401` sin identidad.
 - El logout revoca la sesión en Supabase.
 - La cookie heredada `isAuthenticated` se elimina y ya no concede acceso.
@@ -54,6 +58,8 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 | `src/app/contact/*` | Formulario público y acción de servidor para solicitudes |
 | `src/app/account/password/page.tsx` | Cambio voluntario de contraseña |
 | `src/app/api/inference/route.ts` | Autorización, inferencia y fallback |
+| `src/app/admin/*` | Dashboard y operaciones integradas de admin/root |
+| `src/lib/admin/*` | Guardas, consultas privadas y auditoría de servidor |
 | `src/lib/i18n.ts` | Textos bilingües y presets |
 
 ## Inferencia
@@ -77,9 +83,8 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
    estable y un mensaje accionable. Los detalles técnicos quedan solamente en el
    servidor y la base de datos.
 
-No hay streaming ni conversación multi-turno. La persistencia actual registra
-ejecuciones, intentos y uso, pero todavía no crea conversaciones o mensajes desde
-esta ruta.
+No hay streaming. La interfaz ofrece chat multi-turno persistente y la ruta registra
+conversaciones, mensajes, ejecuciones, intentos, consumo y modelo efectivo.
 
 ## Límites de confianza
 
@@ -108,6 +113,6 @@ La aplicación incorpora una interfaz de chat multi-turno respaldada por Supabas
 usuario. `/api/inference` obtiene las plantillas desde la base, reconstruye el
 historial y usa funciones transaccionales para mensajes, ejecuciones y consumo.
 
-La migración `product_frontend_integration` debe aplicarse antes de desplegar este
-frontend. El backoffice, las aclaraciones automáticas, adjuntos, dictado y límites
-comerciales continúan pendientes.
+Las migraciones `product_frontend_integration` y `admin_root_panel` deben aplicarse
+antes de desplegar este frontend. El panel administrativo está integrado en la misma
+aplicación; las aclaraciones automáticas, adjuntos y dictado continúan pendientes.

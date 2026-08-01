@@ -44,7 +44,10 @@ En Supabase:
 4. Autorizar `http://localhost:3000` y las URLs de preview necesarias.
 5. Crear usuarios manualmente con email confirmado.
 
-Sin SMTP ni correos automáticos, la recuperación consiste en que el administrador asigne y comunique una contraseña temporal nueva.
+Sin SMTP ni correos automáticos, el panel genera enlaces manuales de invitación de
+un solo uso mediante Supabase Auth. El enlace debe comunicarse por un canal externo,
+se muestra una sola vez y nunca se guarda en auditoría. La recuperación de cuentas
+continúa siendo un procedimiento manual.
 
 ## Verificación de preview
 
@@ -60,6 +63,8 @@ Sin SMTP ni correos automáticos, la recuperación consiste en que el administra
    respuesta al navegador no contiene detalles del proveedor.
 6. Verificar español e inglés.
 7. Revisar logs y ejecutar los asesores de seguridad de Supabase.
+8. Probar acceso `/admin` con user, admin y root; suspensión inmediata, invitación
+   manual y restricciones exclusivas de root.
 8. No promover hasta completar la revisión.
 
 ## Verificación local

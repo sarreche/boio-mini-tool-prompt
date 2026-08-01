@@ -30,7 +30,7 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isAuthenticated = Boolean(data?.claims);
-  const isProtected = pathname.startsWith("/prompts") || pathname.startsWith("/account");
+  const isProtected = pathname.startsWith("/prompts") || pathname.startsWith("/account") || pathname.startsWith("/admin");
 
   if (!isAuthenticated && isProtected) {
     return redirectWithCookies(request, response, "/login");
