@@ -105,6 +105,13 @@ conversaciones, mensajes, ejecuciones, intentos, consumo y modelo efectivo.
 - Los proveedores, modelos y prioridades de fallback se configuran en la base de
   datos.
 
+## Cierre operativo implementado
+
+La inferencia reserva atómicamente cuotas y trials antes de llamar al proveedor.
+Las rutas autenticadas de adjuntos y exportación validan propietario y capacidad
+efectiva en servidor. Storage permanece privado y los límites comerciales siguen
+sin cantidades predeterminadas.
+
 ## Integración de producto implementada
 
 La aplicación incorpora una interfaz de chat multi-turno respaldada por Supabase.
@@ -115,4 +122,4 @@ historial y usa funciones transaccionales para mensajes, ejecuciones y consumo.
 
 Las migraciones `product_frontend_integration` y `admin_root_panel` deben aplicarse
 antes de desplegar este frontend. El panel administrativo está integrado en la misma
-aplicación; las aclaraciones automáticas, adjuntos y dictado continúan pendientes.
+aplicación; las aclaraciones automáticas y el dictado continúan pendientes.

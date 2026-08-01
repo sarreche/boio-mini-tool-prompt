@@ -163,9 +163,7 @@ Si el usuario excluye su contenido del análisis, se podrán conservar métricas
 
 ## Fuera del alcance actual
 
-- Aplicación automática de límites numéricos por plan.
-- Archivos y dictado.
-- Exportación.
+- Dictado.
 - Preguntas aclaratorias automáticas antes de ejecutar una tarea.
 
 La interfaz de chat, historial, catálogo, valoraciones, perfil, privacidad y plan
@@ -181,3 +179,9 @@ muestra cuando el servidor confirma un rol `admin` o `root`.
 - Criterios detallados para seleccionar tareas premium.
 - Política legal y texto exacto de privacidad.
 - Proceso futuro de cobro posterior a Gumroad.
+
+## Cierre operativo implementado
+
+- Los límites mensuales y las pruebas premium se aplican cuando un administrador configura cantidades; sin configuración, los usos mensuales son ilimitados y premium permanece bloqueado para Free.
+- Paid dispone de adjuntos TXT/MD privados y exportación Markdown.
+- Dictado, OAuth y preguntas aclaratorias automáticas permanecen fuera de alcance.

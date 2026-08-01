@@ -49,6 +49,9 @@ un solo uso mediante Supabase Auth. El enlace debe comunicarse por un canal exte
 se muestra una sola vez y nunca se guarda en auditoría. La recuperación de cuentas
 continúa siendo un procedimiento manual.
 
+El cierre operativo crea el bucket privado `chat-attachments`, con límite de 1 MB
+y tipos TXT/Markdown. Debe permanecer no público en todos los ambientes.
+
 ## Verificación de preview
 
 1. Confirmar las variables públicas y secretas de Supabase, los tokens de

@@ -132,6 +132,17 @@ sus eventos; root consulta el conjunto.
 La implementación del proceso que revoca sesiones y elimina datos continúa
 pendiente.
 
+## Cierre operativo
+
+`app_private.usage_reservations` serializa la autorización de cuota y trials por
+usuario. La reserva se consume con una respuesta exitosa o se libera al fallar.
+`subscription_events` recibe el historial saneado de cada alta o modificación.
+
+Los adjuntos viven en el bucket privado `chat-attachments`, limitado a TXT/MD UTF-8
+de 1 MB. `attachments` conserva metadatos y relaciones. El borrado definitivo
+revoca sesiones, usa una operación idempotente, consolida métricas anónimas y
+limpia Auth, datos en cascada y objetos de Storage.
+
 ## Seguridad
 
 - Todas las tablas de `public` tienen RLS.
