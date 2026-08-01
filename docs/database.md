@@ -23,6 +23,11 @@ decisiones de autorización.
 
 El usuario `sarreche+root@gmail.com` es el `root` inicial.
 
+`app_private.user_access_controls` aplica suspensiones inmediatas sin depender de
+claims desactualizados. `app_private.operational_settings` guarda umbrales globales
+y `anonymous_daily_metrics` conserva exclusivamente agregados sin identificador
+durante un borrado definitivo.
+
 ## Planes y suscripciones
 
 - `plans` define los planes `free` y `paid`.
@@ -55,6 +60,10 @@ El esquema incluye:
 - `conversations`, `messages` y `attachments`.
 - `ratings`.
 - `premium_trial_grants` y `premium_trial_usages`.
+
+`task_categories`, `task_category_translations` y los prompts localizados de
+`task_translations` convierten el catálogo en configuración operativa. Todas las
+tablas públicas nuevas tienen RLS y grants explícitos.
 
 Archivar una conversación establece `archived_at`; no elimina físicamente sus
 datos.
@@ -114,6 +123,11 @@ temporalmente para compatibilidad con despliegues previos.
 `app_private.audit_logs` está destinado a acciones administrativas. No reemplaza
 `auth.audit_log_entries`, que pertenece al sistema de autenticación de Supabase.
 
+Las funciones administrativas públicas están revocadas para `PUBLIC`, `anon` y
+`authenticated`, concedidas únicamente a `service_role`, validan el actor contra
+`app_private.user_roles` y registran los cambios saneados. Admin consulta solamente
+sus eventos; root consulta el conjunto.
+
 `account_deletion_requests` registra el flujo de solicitud de borrado definitivo.
 La implementación del proceso que revoca sesiones y elimina datos continúa
 pendiente.
@@ -130,5 +144,6 @@ pendiente.
   proceso privilegiado comete un error.
 - Los secretos de proveedores no se almacenan en Postgres.
 
-La futura aplicación administrativa deberá validar los roles en servidor y escribir
-un evento de auditoría por cada operación sensible.
+La interfaz administrativa integrada valida los roles en servidor y escribe un
+evento de auditoría por cada operación sensible. Los enlaces de invitación,
+contraseñas, tokens, secretos y contenido de conversaciones no se copian al log.

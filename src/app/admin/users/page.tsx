@@ -1,0 +1,22 @@
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getPrivateData } from "@/lib/admin/data";
+import { requireAdmin } from "@/lib/admin/auth";
+import { PageHeader, button, field } from "../ui";
+import { deleteUserPermanently, updateProfile, updateUserAccess, updateUserRole } from "../actions";
+import InviteForm from "./InviteForm";
+
+type Role = { user_id: string; role: string };
+type Access = { user_id: string; suspended_at: string | null; suspension_reason: string | null };
+export default async function UsersPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
+  const context = await requireAdmin(); const query = (await searchParams).q?.toLowerCase() ?? "";
+  const admin = createAdminClient(); const [auth, roles, access, profiles] = await Promise.all([
+    admin.auth.admin.listUsers({ page: 1, perPage: 200 }), getPrivateData<Role[]>(context, "roles"), getPrivateData<Access[]>(context, "access"), admin.from("profiles").select("id,display_name,locale,timezone"),
+  ]);
+  const users = (auth.data?.users ?? []).filter((user) => !query || user.email?.toLowerCase().includes(query) || profiles.data?.find((p) => p.id === user.id)?.display_name?.toLowerCase().includes(query));
+  return <><PageHeader title="Usuarios" description="Cuentas, acceso y roles resueltos exclusivamente en servidor." /><InviteForm />
+    <form className="my-5 flex gap-2"><input className={`${field} min-w-72`} name="q" defaultValue={query} placeholder="Buscar por email o nombre" /><button className={button}>Buscar</button></form>
+    <div className="space-y-3">{users.map((user) => { const role = roles.find((r) => r.user_id === user.id)?.role ?? "user"; const state = access.find((a) => a.user_id === user.id); const profile = profiles.data?.find((p) => p.id === user.id); return <article key={user.id} className="rounded-2xl border border-[#d9dee7] bg-white p-5"><div className="flex flex-wrap items-start gap-4"><div className="min-w-64 flex-1"><p className="font-bold">{user.email}</p><p className="text-sm text-[#60708f]">{profile?.display_name || "Sin nombre"} · {role} · {state?.suspended_at ? "Suspendido" : "Activo"}</p></div>
+      <form action={updateUserAccess} className="flex flex-wrap gap-2"><input type="hidden" name="userId" value={user.id}/><input type="hidden" name="suspended" value={state?.suspended_at ? "false" : "true"}/>{!state?.suspended_at ? <input className={field} name="reason" required placeholder="Motivo de suspensión"/> : null}<button className={button}>{state?.suspended_at ? "Rehabilitar" : "Suspender"}</button></form>
+      {context.role === "root" && user.id !== context.userId ? <form action={updateUserRole} className="flex gap-2"><input type="hidden" name="userId" value={user.id}/><select name="role" defaultValue={role} className={field}><option value="user">user</option><option value="admin">admin</option><option value="root">root</option></select><button className={button}>Cambiar rol</button></form> : null}</div><details className="mt-4 border-t pt-3"><summary className="cursor-pointer text-sm font-bold text-[#1261ff]">Editar perfil y acciones avanzadas</summary><form action={updateProfile} className="mt-3 flex flex-wrap gap-2"><input type="hidden" name="userId" value={user.id}/><input name="displayName" defaultValue={profile?.display_name??""} className={field} placeholder="Nombre"/><select name="locale" defaultValue={profile?.locale??"es"} className={field}><option value="es">es</option><option value="en">en</option></select><input name="timezone" defaultValue={profile?.timezone??"America/Montevideo"} className={field}/><button className={button}>Guardar perfil</button></form>{context.role==="root"&&user.id!==context.userId?<form action={deleteUserPermanently} className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3"><input type="hidden" name="userId" value={user.id}/><p className="text-sm font-bold text-red-800">Borrado definitivo</p><div className="mt-2 flex flex-wrap gap-2"><input required name="confirmation" className={field} placeholder={`Escribí ${user.email}`}/><input required name="password" type="password" className={field} placeholder="Tu contraseña root"/><button className="min-h-10 rounded-lg bg-red-700 px-4 text-sm font-bold text-white">Eliminar definitivamente</button></div></form>:null}</details></article>; })}</div>
+  </>;
+}

@@ -109,7 +109,7 @@ Operación que oculta una conversación al usuario sin borrarla físicamente.
 
 Procedimiento que elimina la cuenta y sus datos. Las métricas agregadas y anonimizadas pueden conservarse.
 
-## Roles futuros
+## Roles implementados
 
 ### Usuario
 
@@ -164,14 +164,13 @@ Si el usuario excluye su contenido del análisis, se podrán conservar métricas
 ## Fuera del alcance actual
 
 - Aplicación automática de límites numéricos por plan.
-- Panel administrativo.
 - Archivos y dictado.
 - Exportación.
 - Preguntas aclaratorias automáticas antes de ejecutar una tarea.
 
 La interfaz de chat, historial, catálogo, valoraciones, perfil, privacidad y plan
-está conectada al esquema mediante la migración de integración de producto. El
-backoffice y la aplicación de límites comerciales continúan pendientes.
+está conectada al esquema. El backoffice está integrado en `/admin` y solamente se
+muestra cuando el servidor confirma un rol `admin` o `root`.
 
 ## PENDIENTES DE CONFIRMACIÓN
 
