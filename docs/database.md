@@ -59,6 +59,16 @@ El esquema incluye:
 Archivar una conversación establece `archived_at`; no elimina físicamente sus
 datos.
 
+`task_categories` y `task_category_translations` organizan el catálogo. Las
+traducciones de tarea contienen la plantilla de usuario, el system prompt y su
+versión publicada. Las doce tareas y tres categorías sembradas son un catálogo
+inicial editable, no el catálogo definitivo.
+
+`begin_chat_execution`, `complete_chat_execution` y `fail_chat_execution` coordinan
+atómicamente conversaciones, mensajes, ejecuciones y eventos de uso. Solo
+`service_role` puede invocarlas. `executions.client_request_id` evita duplicar un
+mismo envío del usuario.
+
 ## Inferencia y uso
 
 `executions` representa una solicitud lógica. `execution_attempts` registra cada
@@ -95,6 +105,9 @@ se devuelven estos detalles al cliente.
 
 `complete_inference_execution` finaliza atómicamente un intento exitoso, su
 ejecución y el evento de consumo. Solo `service_role` puede ejecutarla.
+
+El chat utiliza `complete_chat_execution`; la función anterior se conserva
+temporalmente para compatibilidad con despliegues previos.
 
 ## Auditoría y privacidad
 

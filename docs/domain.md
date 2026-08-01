@@ -163,16 +163,15 @@ Si el usuario excluye su contenido del análisis, se podrán conservar métricas
 
 ## Fuera del alcance actual
 
-- Interfaz de conversaciones persistentes.
-- Aplicación automática de planes y límites.
+- Aplicación automática de límites numéricos por plan.
 - Panel administrativo.
 - Archivos y dictado.
 - Exportación.
-- Integración del flujo de inferencia con las métricas persistentes.
+- Preguntas aclaratorias automáticas antes de ejecutar una tarea.
 
-La base de datos necesaria para perfiles, roles, planes, conversaciones, métricas y
-auditoría ya existe, pero estas capacidades todavía no están conectadas a la
-interfaz del MVP.
+La interfaz de chat, historial, catálogo, valoraciones, perfil, privacidad y plan
+está conectada al esquema mediante la migración de integración de producto. El
+backoffice y la aplicación de límites comerciales continúan pendientes.
 
 ## PENDIENTES DE CONFIRMACIÓN
 

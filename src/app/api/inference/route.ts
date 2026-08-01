@@ -7,16 +7,10 @@ import {
   type ProviderMessage,
 } from "./provider";
 
-type ModelRoute = {
-  route_code: string;
-  priority: number;
-  model_id: string;
-  model_code: string;
-  display_name: string;
-  provider_code: string;
-  base_url: string;
-  token_env_var: string;
-};
+  const template = task?.task_translations?.[0];
+  const systemPrompt = template?.system_prompt || (locale === "es" ? "Sos un asistente claro y práctico en español." : "You are a clear and practical assistant. Respond in English.");
+  const currentPrompt = template?.user_prompt_template?.replaceAll("{{input}}", input) || input;
+  const title = input.replace(/\s+/g, " ").slice(0, 80);
 
 export async function POST(req: Request) {
   const requestStartedAt = Date.now();
@@ -254,17 +248,26 @@ export async function POST(req: Request) {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
 
-    if (admin && executionId) {
-      await admin
-        .from("executions")
-        .update({
-          status: "failed",
-          completed_at: new Date().toISOString(),
-          duration_ms: Date.now() - requestStartedAt,
-          error_code: "inference_internal_error",
-        })
-        .eq("id", executionId)
-        .eq("status", "pending");
+  const errors: string[] = [];
+  for (const [index, model] of (modelData as ModelRoute[]).entries()) {
+    const attemptStarted = Date.now();
+    const { data: attempt, error: attemptError } = await admin.from("execution_attempts").insert({ execution_id: started.execution_id, user_id: auth.userId, model_id: model.model_id, provider_code: model.provider_code, model_code: model.model_code, attempt_number: index + 1, status: "pending" }).select("id").single();
+    if (attemptError) break;
+    try {
+      const token = process.env[model.token_env_var];
+      if (!token) throw new Error(`Missing server token ${model.token_env_var}`);
+      const result = await callModel(model.base_url, token, model.model_code, messages);
+      const { data: responseMessageId, error: completionError } = await admin.rpc("complete_chat_execution", {
+        p_execution_id: started.execution_id, p_attempt_id: attempt.id, p_owner_user_id: auth.userId, p_applied_plan_id: planId,
+        p_response: result.text, p_attempt_duration_ms: Date.now() - attemptStarted,
+        p_attempt_input_tokens: result.inputTokens, p_attempt_output_tokens: result.outputTokens,
+      });
+      if (completionError) throw new Error(completionError.message);
+      return NextResponse.json({ conversationId: started.conversation_id, requestMessageId: started.request_message_id, responseMessageId, executionId: started.execution_id, model: model.model_code, provider: model.provider_code, text: result.text });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      errors.push(`${model.provider_code}/${model.model_code}: ${detail}`);
+      await admin.from("execution_attempts").update({ status: "failed", latency_ms: Date.now() - attemptStarted, error_code: "model_attempt_failed", error_detail: detail, completed_at: new Date().toISOString() }).eq("id", attempt.id).eq("execution_id", started.execution_id).eq("user_id", auth.userId).eq("status", "pending");
     }
 
     console.error("Inference request failed", {
@@ -281,4 +284,6 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+  await admin.rpc("fail_chat_execution", { p_execution_id: started.execution_id, p_owner_user_id: auth.userId, p_error_code: "all_models_failed" });
+  return NextResponse.json({ error: "No models available", details: errors }, { status: 503 });
 }

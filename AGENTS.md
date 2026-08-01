@@ -64,6 +64,68 @@ No existe actualmente una suite de tests.
 11. No reintroducir Google Sheets como fuente de autenticación.
 12. No llamar “eliminar” a una operación que solamente archive u oculte datos.
 
+## Preservación de producto y prevención de regresiones
+
+La interfaz y los comportamientos existentes forman parte del contrato del producto. Una integración técnica, migración de datos, refactor o cambio de arquitectura no autoriza por sí mismo a rediseñar la experiencia.
+
+### Separación de alcance
+
+Antes de implementar un cambio relevante, distinguir explícitamente:
+
+- **Cambios internos:** base de datos, APIs, tipos, servicios, persistencia y refactors sin impacto visible.
+- **Cambios funcionales visibles:** nuevas acciones o estados necesarios para cumplir el pedido.
+- **Cambios de diseño:** layout, navegación, jerarquía, estilos, textos, densidad y responsive.
+
+Si el pedido solamente autoriza cambios internos, preservar la interfaz y los comportamientos visibles. Todo cambio de diseño no indispensable queda fuera de alcance hasta recibir aprobación explícita.
+
+### Inventario previo obligatorio
+
+Antes de reemplazar o modificar sustancialmente una pantalla o componente existente, revisar su implementación actual y registrar los comportamientos que deben conservarse. Según corresponda, comprobar:
+
+- Orden y distribución de secciones.
+- Navegación, enlaces y acciones disponibles.
+- Estados vacío, carga, éxito, error y deshabilitado.
+- Edición, copia, regeneración, selección de tareas y cancelación.
+- Menús, diálogos y affordances de interacción.
+- Comportamiento responsive y navegación por teclado.
+- Textos y paridad entre español e inglés.
+- Renderizado de Markdown y otros formatos de contenido.
+
+No asumir que un componente nuevo puede sustituir al anterior sólo porque cubre su flujo principal. Las capacidades secundarias también deben preservarse o declararse expresamente fuera de alcance.
+
+### Umbral de consulta
+
+Detener la implementación y consultar antes de:
+
+- Reordenar o retirar secciones de una pantalla.
+- Eliminar, sustituir u ocultar una acción existente.
+- Cambiar la navegación o el modelo mental de un flujo.
+- Modificar textos importantes o el significado de una operación.
+- Simplificar un componente eliminando estados o controles.
+- Alterar de manera apreciable el responsive, la densidad o la jerarquía visual.
+- Introducir un cambio visible que no sea imprescindible para el objetivo solicitado.
+
+Si una limitación técnica impide preservar un comportamiento, explicar la limitación, las alternativas y el impacto antes de elegir una solución.
+
+### Implementación incremental
+
+- Dividir cambios amplios por capas: esquema y seguridad, acceso a datos, API, conexión de UI y mejoras visibles.
+- Mantener cada entrega lo bastante pequeña como para revisar sus regresiones de manera aislada.
+- No aprovechar una integración para realizar limpiezas, rediseños o refactors adyacentes que no sean necesarios.
+- Considerar preservado todo comportamiento existente que el alcance no reemplace explícitamente.
+- Un cambio está incompleto si desaparece o se degrada una capacidad preexistente no aprobada para reemplazo.
+
+### Verificación visual y de comportamiento
+
+Cuando se modifique una interfaz existente:
+
+1. Comparar la implementación anterior y la nueva en los mismos estados y tamaños de pantalla.
+2. Revisar como mínimo inicio, carga, éxito, error, menús abiertos y controles deshabilitados cuando existan.
+3. Verificar que todas las acciones anteriores siguen presentes y funcionan.
+4. Comprobar hover, foco visible, cursor, etiquetas accesibles y navegación por teclado.
+5. Usar capturas antes/después cuando el cambio afecte layout o componentes principales.
+6. Informar con claridad cualquier verificación visual que no haya podido realizarse; un `build` exitoso no sustituye esta comprobación.
+
 ## Verificación mínima
 
 Antes de entregar cambios:
@@ -74,6 +136,8 @@ Antes de entregar cambios:
 4. Verificar manualmente los flujos afectados.
 5. Confirmar que no se agregaron secretos al diff.
 6. Si hay cambios de datos, verificar permisos, aislamiento por usuario y auditoría.
+7. Si hay cambios de UI, ejecutar el inventario de regresión y comparar los estados afectados con la versión anterior.
+8. Confirmar que el diff no contiene cambios visibles o funcionales ajenos al alcance aprobado.
 
 ## Producto: dirección futura confirmada
 
