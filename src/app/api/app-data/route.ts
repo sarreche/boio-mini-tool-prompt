@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/supabase/authenticated";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { Locale, ProductBootstrap, TaskCard } from "@/lib/product-types";
 
 const PAGE_SIZE = 20;
@@ -13,6 +14,7 @@ export async function GET(request: NextRequest) {
   const locale: Locale = request.nextUrl.searchParams.get("locale") === "en" ? "en" : "es";
   const cursor = request.nextUrl.searchParams.get("cursor");
   const { supabase, userId } = auth;
+  const accessPromise = createAdminClient().rpc("get_effective_product_access", { p_user_id: userId });
 
   let conversationsQuery = supabase.from("conversations")
     .select("id,title,updated_at,initial_task_id")
@@ -21,7 +23,7 @@ export async function GET(request: NextRequest) {
   if (cursor) conversationsQuery = conversationsQuery.lt("updated_at", cursor);
 
   const now = new Date().toISOString();
-  const [tasksResult, categoriesResult, conversationsResult, profileResult, subscriptionResult, freePlanResult, deletionResult, planEntitlementsResult, userEntitlementsResult] = await Promise.all([
+  const [tasksResult, categoriesResult, conversationsResult, profileResult, subscriptionResult, freePlanResult, deletionResult, planEntitlementsResult, userEntitlementsResult, accessResult] = await Promise.all([
     supabase.from("tasks").select("id,code,is_premium,sort_order,category_id,task_translations!inner(locale,name,description)").eq("is_active", true).eq("task_translations.locale", locale).order("sort_order"),
     supabase.from("task_categories").select("id,code,sort_order,task_category_translations!inner(locale,name,description)").eq("is_active", true).eq("task_category_translations.locale", locale).order("sort_order"),
     conversationsQuery,
@@ -31,9 +33,10 @@ export async function GET(request: NextRequest) {
     supabase.from("account_deletion_requests").select("status,requested_at").in("status", ["requested", "in_progress"]).order("requested_at", { ascending: false }).limit(1).maybeSingle(),
     supabase.from("plan_entitlements").select("plan_id,capability,value"),
     supabase.from("user_entitlements").select("capability,value,starts_at,expires_at").eq("user_id", userId).lte("starts_at", now).or(`expires_at.is.null,expires_at.gt.${now}`),
+    accessPromise,
   ]);
 
-  const firstError = [tasksResult, categoriesResult, conversationsResult, profileResult, subscriptionResult, freePlanResult, deletionResult, planEntitlementsResult, userEntitlementsResult].find((result) => result.error)?.error;
+  const firstError = [tasksResult, categoriesResult, conversationsResult, profileResult, subscriptionResult, freePlanResult, deletionResult, planEntitlementsResult, userEntitlementsResult, accessResult].find((result) => result.error)?.error;
   if (firstError) return NextResponse.json({ error: firstError.message }, { status: 500 });
 
   const categoryRows = (categoriesResult.data ?? []) as CategoryQueryRow[];
@@ -60,6 +63,7 @@ export async function GET(request: NextRequest) {
     conversations: visibleConversations.map((item) => ({ id: item.id, title: item.title, updatedAt: item.updated_at, initialTaskId: item.initial_task_id })),
     profile: { displayName: profile.display_name, locale: profile.locale as Locale, timezone: profile.timezone, analyticsContentOptOut: profile.analytics_content_opt_out },
     plan: { code: selectedPlan.code, name: selectedPlan.name, entitlements },
+    access: accessResult.data as ProductBootstrap["access"],
     deletionRequest: deletionResult.data ? { status: deletionResult.data.status, requestedAt: deletionResult.data.requested_at } : null,
     nextConversationCursor: rawConversations.length > PAGE_SIZE ? visibleConversations.at(-1)?.updated_at ?? null : null,
   };

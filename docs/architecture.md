@@ -41,10 +41,10 @@ Navegador
 - La cookie heredada `isAuthenticated` se elimina y ya no concede acceso.
 - No se usa `getSession()` para decisiones de autorización.
 
-Supabase Postgres contiene ahora las tablas base para perfiles, roles, planes,
-suscripciones, conversaciones, uso y auditoría. La interfaz actual todavía no
-consume la mayoría de estas tablas. La acción de `/contact` usa una clave
-privilegiada exclusivamente en el servidor para registrar solicitudes.
+Supabase Postgres contiene y opera perfiles, roles, planes, suscripciones,
+conversaciones, adjuntos, uso, métricas y auditoría. Las tablas privadas se consumen
+indirectamente mediante RPC restringidas a `service_role`; `/contact` también usa
+credenciales privilegiadas exclusivamente en el servidor.
 
 Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 
@@ -58,6 +58,8 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 | `src/app/contact/*` | Formulario público y acción de servidor para solicitudes |
 | `src/app/account/password/page.tsx` | Cambio voluntario de contraseña |
 | `src/app/api/inference/route.ts` | Autorización, inferencia y fallback |
+| `src/app/api/attachments/route.ts` | Carga y eliminación privada de TXT/MD |
+| `src/app/api/conversations/[id]/export/route.ts` | Exportación Markdown autorizada |
 | `src/app/admin/*` | Dashboard y operaciones integradas de admin/root |
 | `src/lib/admin/*` | Guardas, consultas privadas y auditoría de servidor |
 | `src/lib/i18n.ts` | Textos bilingües y presets |
@@ -65,11 +67,11 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 ## Inferencia
 
 1. La ruta verifica una identidad Supabase firmada.
-2. El cliente envía `prompt`, `lang` y `systemPrompt`.
-3. El servidor valida que exista `prompt`.
+2. El cliente envía texto, locale, tarea, conversación, adjuntos e idempotency key.
+3. El servidor valida entrada, propietario, suspensión y acceso efectivo.
 4. Un cliente Supabase exclusivamente de servidor consulta la ruta configurada en
    `active_model_routes`.
-5. Se crea una ejecución pendiente y un intento por cada modelo utilizado.
+5. Se reserva atómicamente cuota o prueba premium y se crea la ejecución.
 6. Los modelos se recorren por prioridad, incluso entre proveedores diferentes.
    Los errores `402`, `429`, `503`, otros errores HTTP, respuestas inválidas y
    fallos de red se clasifican y registran antes de continuar con el siguiente
@@ -77,8 +79,8 @@ Ver `docs/database.md` para el modelo implementado y sus límites de acceso.
 7. Un `429` o `503` solo se reintenta una vez en el mismo modelo cuando el
    proveedor envía `Retry-After` y la espera indicada no supera dos segundos. Una
    espera mayor omite el reintento y activa inmediatamente el fallback.
-8. Una respuesta exitosa completa transaccionalmente el intento, la ejecución y el
-   evento de uso.
+8. Una respuesta exitosa completa transaccionalmente el intento, la ejecución, el
+   evento de uso y el consumo de la reserva; un fallo libera la reserva.
 9. Si todos fallan, se persisten los intentos y se devuelve HTTP 503 con un código
    estable y un mensaje accionable. Los detalles técnicos quedan solamente en el
    servidor y la base de datos.
@@ -92,7 +94,8 @@ conversaciones, mensajes, ejecuciones, intentos, consumo y modelo efectivo.
 - La publishable key de Supabase es pública por diseño.
 - Nunca se expone `service_role` ni una secret key.
 - Las rutas API protegen los secretos de inferencia.
-- Las futuras tablas expuestas deberán habilitar RLS y aislar cada fila por propietario.
+- Todas las tablas expuestas actuales tienen RLS; cualquier tabla futura deberá
+  conservar el mismo aislamiento por propietario.
 
 ## Persistencia de producto
 
@@ -100,10 +103,17 @@ conversaciones, mensajes, ejecuciones, intentos, consumo y modelo efectivo.
 - Las tablas expuestas están en `public` y tienen RLS.
 - Los datos administrativos y operativos sensibles están en `app_private`.
 - El usuario puede consultar solamente sus propios datos.
-- Las escrituras sensibles requerirán rutas de servidor.
+- Las escrituras sensibles usan rutas de servidor y RPC transaccionales auditadas.
 - Los límites comerciales continúan configurables y sin cantidades definitivas.
 - Los proveedores, modelos y prioridades de fallback se configuran en la base de
   datos.
+
+## Cierre operativo implementado
+
+La inferencia reserva atómicamente cuotas y trials antes de llamar al proveedor.
+Las rutas autenticadas de adjuntos y exportación validan propietario y capacidad
+efectiva en servidor. Storage permanece privado y los límites comerciales siguen
+sin cantidades predeterminadas.
 
 ## Integración de producto implementada
 
@@ -115,4 +125,12 @@ historial y usa funciones transaccionales para mensajes, ejecuciones y consumo.
 
 Las migraciones `product_frontend_integration` y `admin_root_panel` deben aplicarse
 antes de desplegar este frontend. El panel administrativo está integrado en la misma
-aplicación; las aclaraciones automáticas, adjuntos y dictado continúan pendientes.
+aplicación; las aclaraciones automáticas y el dictado continúan pendientes.
+
+## Pendientes arquitectónicos conocidos
+
+- Paginación de servidor para listados administrativos extensos.
+- Búsqueda global de usuarios con plan y consumo agregado.
+- Completar superficies CRUD sobre las RPC administrativas ya disponibles y añadir
+  las mutaciones de baja que se aprueben.
+- Exponer directamente el procesamiento root desde la cola de borrados.

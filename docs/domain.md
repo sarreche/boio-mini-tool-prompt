@@ -8,9 +8,13 @@ El valor del producto no es enseñar sintaxis de prompts, sino reducir el esfuer
 
 ## Estado actual del producto
 
-El MVP presenta una caja de texto y una botonera de prompts prediseñados. El usuario puede aplicar una transformación, editar el texto resultante y enviarlo a un modelo.
+La aplicación presenta un chat persistente que puede comenzar desde entrada libre o
+desde una tarea del catálogo bilingüe. El usuario puede continuar, editar, regenerar,
+valorar y archivar conversaciones.
 
-La interfaz incluye una vista informativa de planes en `/plans`. Compara el alcance general de `free` y `paid`, enlaza a la compra oficial en Gumroad y explica el proceso de activación manual. No muestra cantidades sin confirmar y todavía no aplica límites o capacidades por plan.
+La vista `/plans` compara `free` y `paid`, enlaza a Gumroad y explica la activación
+manual. La inferencia aplica capacidades y límites cuando un administrador los
+configura; sin cantidad configurada, los usos mensuales son ilimitados.
 
 Desde el login se puede abrir un formulario público para solicitar acceso Free o
 enviar una consulta. El formulario registra una solicitud pendiente para revisión
@@ -22,17 +26,9 @@ No todos los presets están confirmados como parte del catálogo futuro.
 
 ## Dirección de producto confirmada
 
-El producto evolucionará hacia:
-
-- Chat como interacción principal.
-- Tareas generales para aprender del uso real.
-- Entrada libre o inicio desde una tarea.
-- Preguntas aclaratorias generadas por el modelo.
-- Prompt visible como opción avanzada.
-- Conversaciones persistentes y refinables.
-- Catálogo ampliable y potencialmente organizado por categorías.
-- Métricas de uso y utilidad.
-- Plan gratuito y plan pago.
+Chat, entrada libre, tareas, persistencia, catálogo por categorías, métricas y
+planes ya forman parte del estado actual. Permanecen como dirección futura las
+preguntas aclaratorias automáticas y el prompt avanzado visible/editable.
 
 ## Glosario
 
@@ -95,7 +91,8 @@ procesa manualmente y se mantiene separado de las compras y suscripciones.
 
 ### Archivo
 
-Adjunto asociado a una conversación. El soporte inicial previsto es `.txt` y `.md`, condicionado a no introducir costos no aceptados.
+Adjunto privado `.txt` o `.md` asociado a una conversación. Paid o una excepción
+individual permiten hasta tres archivos UTF-8 de 1 MB por envío.
 
 ### Dictado
 
@@ -136,7 +133,7 @@ Procedimiento que elimina la cuenta y sus datos. Las métricas agregadas y anoni
 
 Las acciones administrativas deben quedar auditadas.
 
-## Métricas previstas
+## Métricas implementadas
 
 - Usuarios activos.
 - Tareas más utilizadas.
@@ -156,17 +153,18 @@ Si el usuario excluye su contenido del análisis, se podrán conservar métricas
 - Se advertirá que no se introduzcan datos sensibles.
 - Se informará que proveedores externos procesan las solicitudes.
 - El usuario podrá archivar conversaciones.
-- Existirá un procedimiento de borrado definitivo.
+- Existe un procedimiento root de borrado definitivo con reautenticación,
+  consolidación anónima e idempotencia.
 - Solo `root` podrá leer conversaciones completas.
 - El usuario podrá excluir su contenido del análisis.
 - La retención prevista es indefinida, sujeta a mantenimiento futuro.
 
 ## Fuera del alcance actual
 
-- Aplicación automática de límites numéricos por plan.
-- Archivos y dictado.
-- Exportación.
+- Dictado.
+- OAuth.
 - Preguntas aclaratorias automáticas antes de ejecutar una tarea.
+- Prompt avanzado visible/editable.
 
 La interfaz de chat, historial, catálogo, valoraciones, perfil, privacidad y plan
 está conectada al esquema. El backoffice está integrado en `/admin` y solamente se
@@ -181,3 +179,17 @@ muestra cuando el servidor confirma un rol `admin` o `root`.
 - Criterios detallados para seleccionar tareas premium.
 - Política legal y texto exacto de privacidad.
 - Proceso futuro de cobro posterior a Gumroad.
+
+## Cierre operativo implementado
+
+- Los límites mensuales y las pruebas premium se aplican cuando un administrador configura cantidades; sin configuración, los usos mensuales son ilimitados y premium permanece bloqueado para Free.
+- Paid dispone de adjuntos TXT/MD privados y exportación Markdown.
+- Dictado, OAuth y preguntas aclaratorias automáticas permanecen fuera de alcance.
+
+## Pendientes funcionales conocidos
+
+- Completar edición y baja controlada en todos los CRUD administrativos.
+- Incorporar paginación real en auditoría, conversaciones y solicitudes.
+- Hacer global la búsqueda de usuarios y mostrar plan y consumo por usuario.
+- Procesar solicitudes de borrado directamente desde la cola root.
+- Mostrar consumo, límite y próxima renovación en los errores de cuota.

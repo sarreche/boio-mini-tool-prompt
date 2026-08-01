@@ -39,6 +39,14 @@ export type ProductBootstrap = {
     analyticsContentOptOut: boolean;
   };
   plan: { code: string; name: string; entitlements: Record<string, unknown> };
+  access: {
+    used: number;
+    periodStart: string;
+    monthlyUses: { configured: boolean; limit: number | null };
+    premiumTrials: { configured: boolean; limit: number | null };
+    attachments: { enabled: boolean };
+    conversationExport: { enabled: boolean };
+  };
   deletionRequest: { status: string; requestedAt: string } | null;
   nextConversationCursor: string | null;
 };
