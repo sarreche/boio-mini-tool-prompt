@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -19,7 +19,17 @@ const GUMROAD_URL = "https://boiostore.gumroad.com/l/gqwnl";
 
 export default function PlansPage({ initialLang }: { initialLang: "es" | "en" }) {
   const [lang, setLang] = useState<"es" | "en">(initialLang);
+  const [currentPlan, setCurrentPlan] = useState("free");
   const t = plansI18n[lang];
+
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/app-data?locale=${lang}`, { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((value) => { if (active && value?.plan?.code) setCurrentPlan(value.plan.code); })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, [lang]);
 
   return (
     <main className="min-h-screen bg-[#fbfbf9] text-[#10182b]">
@@ -53,7 +63,7 @@ export default function PlansPage({ initialLang }: { initialLang: "es" | "en" })
             icon={<Lightning size={27} weight="duotone" />}
             name={t.free.name}
             description={t.free.description}
-            badge={t.current}
+            badge={currentPlan === "free" ? t.current : t.free.name}
             features={t.free.features}
             action={<Link href={`/prompts?lang=${lang}`} className="flex min-h-12 items-center justify-center rounded-xl border border-[#cfd6e1] px-5 font-bold text-[#40516f] hover:bg-[#f4f6f9]">{t.keepUsing}</Link>}
           />
@@ -62,7 +72,7 @@ export default function PlansPage({ initialLang }: { initialLang: "es" | "en" })
             icon={<Crown size={27} weight="duotone" />}
             name={t.paid.name}
             description={t.paid.description}
-            badge={t.recommended}
+            badge={currentPlan === "paid" ? t.current : t.recommended}
             features={t.paid.features}
             action={
               <a href="#subscription-process" className="flex min-h-12 items-center justify-center rounded-xl bg-[#1261ff] px-5 font-bold text-white hover:bg-[#084ad4]">

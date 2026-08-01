@@ -53,11 +53,14 @@ Sin SMTP ni correos automáticos, la recuperación consiste en que el administra
 2. Probar redirección inicial y login válido e inválido.
 3. Confirmar que `/prompts` y `/account/password` redirigen sin sesión.
 4. Confirmar que `/api/inference` devuelve `401` sin sesión.
-5. Probar inferencia, fallback entre proveedores, persistencia de ejecución, cambio
-   de contraseña y logout.
-6. Verificar español e inglés.
-7. Revisar logs y ejecutar los asesores de seguridad de Supabase.
-8. No promover hasta completar la revisión.
+5. Aplicar todas las migraciones, incluida `product_frontend_integration`.
+6. Probar catálogo bilingüe, chat multi-turno, historial, archivo, valoraciones,
+   perfil, privacidad y solicitud de borrado.
+7. Probar inferencia, fallback, idempotencia, persistencia de mensajes/ejecución/uso,
+   cambio de contraseña y logout.
+8. Verificar español e inglés.
+9. Revisar logs y ejecutar los asesores de seguridad y rendimiento de Supabase.
+10. No promover hasta completar la revisión.
 
 ## Verificación local
 

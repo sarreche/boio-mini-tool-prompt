@@ -92,9 +92,14 @@ esta ruta.
 - Los proveedores, modelos y prioridades de fallback se configuran en la base de
   datos.
 
-## Dirección futura confirmada
+## Integración de producto implementada
 
-El esquema de persistencia para chat, conversaciones, métricas, planes y roles ya
-está creado. Continúan pendientes las interfaces que usan estos datos, la aplicación
-administrativa separada y la integración del flujo de inferencia con la nueva
-persistencia.
+La aplicación incorpora una interfaz de chat multi-turno respaldada por Supabase.
+`/api/app-data` carga catálogo, historial, perfil y plan bajo RLS;
+`/api/conversations/*`, `/api/ratings` y `/api/account` gestionan datos propios del
+usuario. `/api/inference` obtiene las plantillas desde la base, reconstruye el
+historial y usa funciones transaccionales para mensajes, ejecuciones y consumo.
+
+La migración `product_frontend_integration` debe aplicarse antes de desplegar este
+frontend. El backoffice, las aclaraciones automáticas, adjuntos, dictado y límites
+comerciales continúan pendientes.
